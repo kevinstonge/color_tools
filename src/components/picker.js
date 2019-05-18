@@ -1,5 +1,7 @@
 class picker {
-    constructor(width=200, height=200,colorCanvas,colorCanvasUI,updateFunction) {
+    constructor(width=200, height=200,baseColor,colorCanvas,colorCanvasUI,updateFunction) {
+    this.baseColorHEX = baseColor;
+    this.baseColorHSL = this.hex2hsl(baseColor);
     this.updateSelectedColor = updateFunction;
     this.colorCanvas = colorCanvas;
     this.colorCanvasUI = colorCanvasUI;
@@ -25,14 +27,28 @@ class picker {
     this.topY = (this.height/2)-(this.boxHeight/2);
     this.rightX = this.leftX+this.boxWidth;
     this.bottomY = (this.height/2)+(this.boxHeight/2);
-    this.wheelSelector = [this.width-(this.outerWheelThickness/2),this.height/2];
+    //calculate position of wheelSelector based on baseColorHSL
+    //polar to cartesian, adjust for width/radii/thickness)
+    this.wheelSelector = [0,0];
+    this.calculateWheelSelectorPosition(this.baseColorHSL);
+    
     this.boxSelector = [this.width/2,this.bottomY];
     this.activeSelector = "wheel";
+    this.selectedColor = this.hex2rgb(baseColor); 
     this.selectorLineWidth = Math.ceil(this.outerWheelThickness/12);
     this.textX = this.width/2;
     this.textY = this.bottomY + this.outerWheelThickness*1.2;
     };
-
+    calculateWheelSelectorPosition(color) {
+        console.log('color:',color);
+        console.log(this.wheelSelector);
+        let r = this.wheelRadius;
+        let theta = color[0]*Math.PI/180;
+        let x = r*Math.cos(theta)+(this.width/2);
+        let y = -r*Math.sin(theta)+(this.height/2);
+        this.wheelSelector = [x,y];
+        console.log(this.wheelSelector);
+    }
     drawOuterWheel = (segments=12) => { 
         for (let i=0; i<segments; i++) {
             let theta0 = i*360/segments;
@@ -99,6 +115,8 @@ class picker {
         if (this.activeSelector === "wheel") {
             this.getNearestPointOnWheel(this.xDist,this.yDist,this.dist);
             this.drawSelectors();
+            //having a problem here, wheelSelector contains unexpected values after adding calculateWheelSelectorPosition function
+            console.log(this.wheelSelector);
             let imgData = this.ctx.getImageData(this.wheelSelector[0],this.wheelSelector[1],1,1).data.slice(0,3);    
             this.drawInnerBox(this.rgb2hsl(...imgData)[0]);
         }
@@ -108,7 +126,6 @@ class picker {
         }
         if (this.activeSelector) {
             this.selectedColor = this.ctx.getImageData(this.boxSelector[0],this.boxSelector[1],1,1).data.slice(0,3);
-            this.drawOutput(this.rgb2hex(...this.selectedColor));
         }
     }
 
@@ -141,13 +158,14 @@ class picker {
             this.ctxUI.stroke();
             this.ctxUI.closePath();
         });
+        this.drawOutput(this.rgb2hex(...this.selectedColor));
     }
 
     getNearestPointInBox = (x,y) => {
-        if (this.x<this.leftX) { this.x = this.leftX };
-        if (this.x>this.rightX) { this.x = this.rightX };
-        if (this.y<this.topY) { this.y = this.topY };
-        if (this.y>this.bottomY) { this.y = this.bottomY };
+        if (x<this.leftX) { this.x = this.leftX };
+        if (x>this.rightX) { this.x = this.rightX };
+        if (y<this.topY) { this.y = this.topY };
+        if (y>this.bottomY) { this.y = this.bottomY };
         this.boxSelector = [this.x,this.y];
     }
 
@@ -156,7 +174,6 @@ class picker {
         this.y = (this.width/2) + this.wheelRadius*y/d;
         this.wheelSelector = [this.x,this.y];
     }
-
     rgb2hsl = (r,g,b) => {
         r=r/255; g=g/255; b=b/255;
         let h,s,l,d,min,max = null;
@@ -175,7 +192,6 @@ class picker {
         l = Math.round(l*50,2);
         return [h,s,l];
     }
-
     rgb2hex = (r, g, b) => {
         let c = [r,g,b];
         c = "#" + c.map(
@@ -188,21 +204,32 @@ class picker {
             }).join("").toUpperCase();
         return c;
     }
-
-    getNearestPointInBox = (x,y) => {
-        if (x<this.leftX) { this.x = this.leftX };
-        if (x>this.rightX) { this.x = this.rightX };
-        if (y<this.topY) { this.y = this.topY };
-        if (y>this.bottomY) { this.y = this.bottomY };
-        this.boxSelector = [this.x,this.y];
+    hsl2rgb = (h,s,l) => {
+        s=s/100;
+        l=l/100;
+        let c=(1-Math.abs((2*l)-1))*s;
+        let x=c*(1-Math.abs(((h/60)%2)-1));
+        let m=l-c/2;
+        let r,g,b;
+        if (h<60|h===360) {r=c;g=x;b=0;}
+        else if (h<120)	{r=x;g=c;b=0}
+        else if (h<180)	{r=0;g=c;b=x}
+        else if (h<240) {r=0;g=x;b=c}
+        else if (h<300) {r=x;g=0;b=c}
+        else if (h<360)	{r=c;g=0;b=x}
+        r=Math.round((r+m)*255);g=Math.round((g+m)*255);b=Math.round((b+m)*255);
+        return [r,g,b];	
     }
-
-    getNearestPointOnWheel = (x,y,d) => {
-        this.x = (this.width/2) + this.wheelRadius*x/d;
-        this.y = (this.width/2) + this.wheelRadius*y/d;
-        this.wheelSelector = [this.x,this.y];
+    hex2rgb = (hex) => {
+        let r = parseInt(hex.substring(1,3),16);
+        let g = parseInt(hex.substring(3,5),16);
+        let b = parseInt(hex.substring(5,7),16);
+        return [r,g,b];
     }
-
+    
+    hex2hsl = (hex) => {
+        return this.rgb2hsl(...this.hex2rgb(hex));
+    }
     rgb2hsl = (r,g,b) => {
         r=r/255; g=g/255; b=b/255;
         let h = null;
