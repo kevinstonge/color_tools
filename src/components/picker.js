@@ -40,14 +40,13 @@ class picker {
     this.textY = this.bottomY + this.outerWheelThickness*1.2;
     };
     calculateWheelSelectorPosition(color) {
-        console.log('color:',color);
-        console.log(this.wheelSelector);
+        let hexRegex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+        if (color.toString().match(hexRegex)) { color = this.hex2hsl(color) };
         let r = this.wheelRadius;
         let theta = color[0]*Math.PI/180;
         let x = r*Math.cos(theta)+(this.width/2);
         let y = -r*Math.sin(theta)+(this.height/2);
         this.wheelSelector = [x,y];
-        console.log(this.wheelSelector);
     }
     drawOuterWheel = (segments=12) => { 
         for (let i=0; i<segments; i++) {
@@ -115,8 +114,6 @@ class picker {
         if (this.activeSelector === "wheel") {
             this.getNearestPointOnWheel(this.xDist,this.yDist,this.dist);
             this.drawSelectors();
-            //having a problem here, wheelSelector contains unexpected values after adding calculateWheelSelectorPosition function
-            console.log(this.wheelSelector);
             let imgData = this.ctx.getImageData(this.wheelSelector[0],this.wheelSelector[1],1,1).data.slice(0,3);    
             this.drawInnerBox(this.rgb2hsl(...imgData)[0]);
         }
@@ -130,7 +127,7 @@ class picker {
     }
 
     drawOutput = (output) => {
-        this.updateSelectedColor(output);
+        this.updateSelectedColor(output,true); //second parameter tells handler that the update came from within the picker itself
         this.ctxUI.textAlign = 'center';
         this.ctxUI.font = `${this.outerWheelThickness}px monospace`;
         this.ctxUI.fillStyle = 'white';

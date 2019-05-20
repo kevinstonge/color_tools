@@ -5,12 +5,24 @@ import picker from './picker';
 export default class ColorPicker extends Component {
     constructor(props) {
         super(props);
-        this.state = { baseColor: '#0000FF' };
+        this.state = { baseColor: '#FF0000' };
     };
-    updateSelectedColor = (color) => { 
+    updateSelectedColor = (color,selfInvoked) => { 
+        //add color format detection: hex? hsl?
         if (color === this.state.baseColor) { return; }
         this.setState({baseColor:color});
+        if (selfInvoked!==true) {
+            //selfInvoked should be passed as true from within picker.js because drawOutput calls updateSelectedColor (infinite loop)
+            this.colorPicker.baseColorHEX = color;
+            this.colorPicker.baseColorHSL = this.colorPicker.hex2hsl(color);
+            this.colorPicker.selectedColor = this.colorPicker.hex2rgb(color);
+            this.colorPicker.calculateWheelSelectorPosition(color);
+            //need calculateBoxSelectorPosition
+            this.colorPicker.drawOutput(color);
+            this.colorPicker.drawSelectors();
+        }
     }
+    test = () => { this.updateSelectedColor("#00FF00"); };
     render() {
         return (
             <React.Fragment>
@@ -31,12 +43,6 @@ export default class ColorPicker extends Component {
         window.addEventListener("mousedown",this.colorPicker.mouseDown);
         window.addEventListener("mousemove",this.colorPicker.mouseMove);
         //add touchevents!
-    }
-    componentDidUpdate() {
-        this.colorPicker.calculateWheelSelectorPosition(this.state.baseColor);
-        this.colorPicker.drawSelectors();
-        //need to set position of wheelSelector & boxSelector, then call drawSelectors!
-        //but the math to calculate the selector position doesn't exist yet. 
     }
 };
 
