@@ -8,10 +8,10 @@ export default class HslSliders extends Component {
         this.sliders = ['h','s','l'];
     }
     hChange = () => {
-        this.props.updateBaseColor(cConvert.hsl2hex(this.h.value,this.s.value,this.l.value));
+        this.props.updateBaseColor([this.h.value,this.s.value,this.l.value]);
     }
     setSliders = () => {
-        this.baseColorHSL = cConvert.hex2hsl(this.props.baseColor);
+        this.baseColorHSL = this.props.baseColor;
         this.h.value = this.baseColorHSL[0];
         this.s.value = this.baseColorHSL[1];
         this.l.value = this.baseColorHSL[2];

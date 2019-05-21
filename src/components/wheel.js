@@ -1,8 +1,8 @@
 import * as cConvert from '../accessories/colorConversion';
 export default class cWheel {
     constructor(width,height,baseColor,colorCanvas,colorCanvasUI,updateFunction) {
-    this.baseColorHEX = baseColor;
-    this.baseColorHSL = cConvert.hex2hsl(baseColor);
+    this.baseColorHSL = baseColor;
+    this.baseColorHEX = cConvert.hsl2hex(baseColor);
     this.updateSelectedColor = updateFunction;
     this.colorCanvas = colorCanvas;
     this.colorCanvasUI = colorCanvasUI;
@@ -29,16 +29,15 @@ export default class cWheel {
     this.rightX = this.leftX+this.boxWidth;
     this.bottomY = (this.height/2)+(this.boxHeight/2);
     this.calculateWheelSelectorPosition(this.baseColorHSL);
-    this.calculateBoxSelectorPosition(this.baseColorHEX);
+    this.calculateBoxSelectorPosition(this.baseColorHSL);
     this.activeSelector = "wheel";
-    this.selectedColor = cConvert.hex2rgb(baseColor); 
+    this.selectedColor = this.baseColorHSL; 
     this.selectorLineWidth = Math.ceil(this.outerWheelThickness/12);
     this.textX = this.width/2;
     this.textY = this.bottomY + this.outerWheelThickness*1.2;
     this.selfInvoked = false;
     };
     calculateBoxSelectorPosition(color) {
-        color = cConvert.hex2hsl(color);
         let s = color[1];
         let l = color[2];
         let x = this.leftX + this.boxWidth * l/100;
@@ -46,21 +45,21 @@ export default class cWheel {
         this.boxSelector = [x,y];
     }
     calculateWheelSelectorPosition(color) {
-        let hexRegex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
-        if (color.toString().match(hexRegex)) { color = cConvert.hex2hsl(color) };
+        // let hexRegex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
+        // if (color.toString().match(hexRegex)) { color = cConvert.hex2hsl(color) };
         let r = this.wheelRadius;
         let theta = color[0]*Math.PI/180;
         let x = r*Math.cos(theta)+(this.width/2);
         let y = -r*Math.sin(theta)+(this.height/2);
         this.wheelSelector = [x,y];
     }
-    drawInnerBox = (baseColor=0) => {
+    drawInnerBox = (baseHue=this.baseColorHSL[0]) => {
         for (let row = this.topY; row <= this.bottomY; row++) { 
             let rowPercent = 100*(row-this.topY)/(this.bottomY-this.topY);
             let boxGradient = this.ctx.createLinearGradient(this.leftX,row,this.rightX,row);
             let steps = 10; //ten gradient steps produces good balance of performance and accuracy
             for (let i=0; i<=steps; i++) { 
-                boxGradient.addColorStop(i/steps,`hsla(${baseColor},${rowPercent}%,${100*i/steps}%,1)`);
+                boxGradient.addColorStop(i/steps,`hsla(${baseHue},${rowPercent}%,${100*i/steps}%,1)`);
             }
             this.ctx.strokeStyle = boxGradient;
             this.ctx.lineWidth = 2;
@@ -93,13 +92,14 @@ export default class cWheel {
     }
     drawOutput = (output) => {
         this.updateSelectedColor(output);
+        this.baseColorHEX = cConvert.hsl2hex(...output);
         this.ctxUI.textAlign = 'center';
         this.ctxUI.font = `${this.outerWheelThickness}px monospace`;
         this.ctxUI.fillStyle = 'white';
         this.ctxUI.strokeStyle = 'black';
         this.ctxUI.lineWidth = this.selectorLineWidth+1;
-        this.ctxUI.strokeText(output, this.textX, this.textY);
-        this.ctxUI.fillText(output, this.textX, this.textY);
+        this.ctxUI.strokeText(this.baseColorHEX, this.textX, this.textY);
+        this.ctxUI.fillText(this.baseColorHEX, this.textX, this.textY);
     }
     drawSelectors = () => {
         let selectors = [[this.wheelSelector[0],this.wheelSelector[1]],[this.boxSelector[0],this.boxSelector[1]]];
@@ -119,13 +119,14 @@ export default class cWheel {
             this.ctxUI.stroke();
             this.ctxUI.closePath();
         });
-        this.drawOutput(cConvert.rgb2hex(...this.selectedColor));
+        this.drawOutput(this.selectedColor);
     }
     externalInput = (color) => {
         //add color format detection: hex/hsl
-        this.baseColorHEX = color;
-        this.baseColorHSL = cConvert.hex2hsl(color);
-        this.selectedColor = cConvert.hex2rgb(color);
+        //if (color.match(/^#[0-9a-f]{3,6}$/i)) { color = cConvert.hex2hsl(color); }
+        this.baseColorHSL = color;
+        this.baseColorHEX = cConvert.hsl2hex(color);
+        this.selectedColor = color;
         this.calculateWheelSelectorPosition(color);
         this.calculateBoxSelectorPosition(color);
         this.drawInnerBox(this.baseColorHSL[0]);
@@ -169,19 +170,19 @@ export default class cWheel {
         this.mouseData(e);
         if (this.activeSelector === "wheel") {
             this.getNearestPointOnWheel(this.xDist,this.yDist,this.dist);
-            let imgData = this.ctx.getImageData(this.wheelSelector[0],this.wheelSelector[1],1,1).data.slice(0,3);    
+            let imgData = this.ctx.getImageData(this.wheelSelector[0],this.wheelSelector[1],1,1).data.slice(0,3); 
             this.drawInnerBox(cConvert.rgb2hsl(...imgData)[0]);
-            this.selectedColor = this.ctx.getImageData(this.boxSelector[0],this.boxSelector[1],1,1).data.slice(0,3);
+            this.selectedColor = cConvert.rgb2hsl(...this.ctx.getImageData(this.boxSelector[0],this.boxSelector[1],1,1).data.slice(0,3));
             this.drawSelectors();
         }
         if (this.activeSelector === "box") { 
             this.getNearestPointInBox(this.x,this.y);
-            this.selectedColor = this.ctx.getImageData(this.boxSelector[0],this.boxSelector[1],1,1).data.slice(0,3);
+            this.selectedColor = cConvert.rgb2hsl(...this.ctx.getImageData(this.boxSelector[0],this.boxSelector[1],1,1).data.slice(0,3));
             this.drawSelectors();
         }
     }
     mouseUp = () => {
-        this.updateSelectedColor(cConvert.rgb2hex(...this.selectedColor));
+        this.updateSelectedColor(this.selectedColor);
         this.selfInvoked = false;
     }
 }
