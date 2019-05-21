@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
-import picker from './picker';
+import cWheel from './wheel';
 //todo: "copy"/"OK"/"close" buttons
 //todo: preview box in top left
-export default class ColorPicker extends Component {
+export default class ColorWheel extends Component {
 
     updateSelectedColor = (color) => { 
         if (color === this.props.baseColor) { return; }
         this.props.updateBaseColor(color);
     }
     componentDidUpdate() {
-        if(this.colorPicker.selfInvoked === false) {
-            this.colorPicker.externalInput(this.props.baseColor);
+        if(this.colorWheel.selfInvoked === false) {
+            this.colorWheel.externalInput(this.props.baseColor);
         }
     }
     render() {
@@ -26,11 +26,11 @@ export default class ColorPicker extends Component {
     componentDidMount() {
         let colorCanvas = document.querySelector("#colorCanvas");
         let colorCanvasUI = document.querySelector("#colorCanvasUI");
-        this.colorPicker = new picker(300,300,this.props.baseColor,colorCanvas,colorCanvasUI,this.updateSelectedColor);
-        window.addEventListener("load",()=>{this.colorPicker.drawOuterWheel();this.colorPicker.drawInnerBox(); this.colorPicker.drawSelectors();});
-        window.addEventListener("mousedown",this.colorPicker.mouseDown);
-        window.addEventListener("mousemove",this.colorPicker.mouseMove);
-        window.addEventListener("mouseup",this.colorPicker.mouseUp);
+        this.colorWheel = new cWheel(300,300,this.props.baseColor,colorCanvas,colorCanvasUI,this.updateSelectedColor);
+        this.colorWheel.drawOuterWheel();this.colorWheel.drawInnerBox(); this.colorWheel.drawSelectors();
+        colorCanvasUI.addEventListener("mousedown",this.colorWheel.mouseDown);
+        colorCanvasUI.addEventListener("mousemove",this.colorWheel.mouseMove);
+        colorCanvasUI.addEventListener("mouseup",this.colorWheel.mouseUp);
         //add touchevents!
     }
 };

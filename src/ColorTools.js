@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import ColorPicker from './components/ColorPicker';
+import ColorWheel from './components/ColorWheel';
+import HslSliders from './components/HslSliders';
 import './ColorTools.css';
 export default class ColorTools extends Component {
   constructor(props) {
@@ -14,8 +15,8 @@ export default class ColorTools extends Component {
   return (
     <div>
       <p>current color: {this.state.baseColor}</p>
-      <ColorPicker updateBaseColor={this.updateBaseColor} baseColor={this.state.baseColor} />
-      <button onClick={() => { this.updateBaseColor("#549388") } }>button</button>
+      <ColorWheel updateBaseColor={this.updateBaseColor} baseColor={this.state.baseColor} />
+      <HslSliders updateBaseColor={this.updateBaseColor} baseColor={this.state.baseColor} />
     </div>
   );
   };

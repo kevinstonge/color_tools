@@ -1,5 +1,5 @@
 import * as cConvert from '../accessories/colorConversion';
-export default class picker {
+export default class cWheel {
     constructor(width,height,baseColor,colorCanvas,colorCanvasUI,updateFunction) {
     this.baseColorHEX = baseColor;
     this.baseColorHSL = cConvert.hex2hsl(baseColor);
@@ -122,7 +122,6 @@ export default class picker {
         this.drawOutput(cConvert.rgb2hex(...this.selectedColor));
     }
     externalInput = (color) => {
-        console.log(this.selfInvoked);
         //add color format detection: hex/hsl
         this.baseColorHEX = color;
         this.baseColorHSL = cConvert.hex2hsl(color);
