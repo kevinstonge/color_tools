@@ -1,7 +1,7 @@
 import React from 'react';
 import ColorPicker from './components/ColorPicker';
 import './App.css';
-function App() {
+function ColorTools() {
   return (
     <div>
       <ColorPicker />
@@ -9,4 +9,4 @@ function App() {
   );
 }
 
-export default App;
+export default ColorTools;

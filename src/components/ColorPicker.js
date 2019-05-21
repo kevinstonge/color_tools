@@ -8,21 +8,12 @@ export default class ColorPicker extends Component {
         this.state = { baseColor: '#FF0000' };
     };
     updateSelectedColor = (color,selfInvoked) => { 
-        //add color format detection: hex? hsl?
         if (color === this.state.baseColor) { return; }
         this.setState({baseColor:color});
         if (selfInvoked!==true) {
-            //selfInvoked should be passed as true from within picker.js because drawOutput calls updateSelectedColor (infinite loop)
-            this.colorPicker.baseColorHEX = color;
-            this.colorPicker.baseColorHSL = this.colorPicker.hex2hsl(color);
-            this.colorPicker.selectedColor = this.colorPicker.hex2rgb(color);
-            this.colorPicker.calculateWheelSelectorPosition(color);
-            //need calculateBoxSelectorPosition
-            this.colorPicker.drawOutput(color);
-            this.colorPicker.drawSelectors();
+            this.colorPicker.externalInput(color);
         }
     }
-    test = () => { this.updateSelectedColor("#00FF00"); };
     render() {
         return (
             <React.Fragment>
@@ -31,7 +22,7 @@ export default class ColorPicker extends Component {
                 <canvas id="colorCanvas"></canvas>
                 <canvas id="colorCanvasUI"></canvas>
             </div>
-            <button onClick={this.test}>button</button>
+            <button onClick={() => { this.updateSelectedColor("#549388") } }>button</button>
             </React.Fragment>
         );
     };

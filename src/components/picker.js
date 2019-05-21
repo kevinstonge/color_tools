@@ -27,18 +27,35 @@ class picker {
     this.topY = (this.height/2)-(this.boxHeight/2);
     this.rightX = this.leftX+this.boxWidth;
     this.bottomY = (this.height/2)+(this.boxHeight/2);
-    //calculate position of wheelSelector based on baseColorHSL
-    //polar to cartesian, adjust for width/radii/thickness)
     this.wheelSelector = [0,0];
     this.calculateWheelSelectorPosition(this.baseColorHSL);
-    
-    this.boxSelector = [this.width/2,this.bottomY];
+    this.calculateBoxSelectorPosition(this.baseColorHEX);
     this.activeSelector = "wheel";
     this.selectedColor = this.hex2rgb(baseColor); 
     this.selectorLineWidth = Math.ceil(this.outerWheelThickness/12);
     this.textX = this.width/2;
     this.textY = this.bottomY + this.outerWheelThickness*1.2;
     };
+
+    externalInput(color) {
+        //add color format detection: hex/hsl
+        this.baseColorHEX = color;
+        this.baseColorHSL = this.hex2hsl(color);
+        this.selectedColor = this.hex2rgb(color);
+        this.calculateWheelSelectorPosition(color);
+        this.calculateBoxSelectorPosition(color);
+        this.drawInnerBox(this.baseColorHSL[0]);
+        this.drawSelectors();
+    }
+
+    calculateBoxSelectorPosition(color) {
+        color = this.hex2hsl(color);
+        let s = color[1];
+        let l = color[2];
+        let x = this.leftX + this.boxWidth * l/100;
+        let y = this.topY + this.boxHeight * s/100;
+        this.boxSelector = [x,y];
+    }
     calculateWheelSelectorPosition(color) {
         let hexRegex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
         if (color.toString().match(hexRegex)) { color = this.hex2hsl(color) };
@@ -113,16 +130,15 @@ class picker {
         this.mouseData(e);
         if (this.activeSelector === "wheel") {
             this.getNearestPointOnWheel(this.xDist,this.yDist,this.dist);
-            this.drawSelectors();
             let imgData = this.ctx.getImageData(this.wheelSelector[0],this.wheelSelector[1],1,1).data.slice(0,3);    
             this.drawInnerBox(this.rgb2hsl(...imgData)[0]);
+            this.selectedColor = this.ctx.getImageData(this.boxSelector[0],this.boxSelector[1],1,1).data.slice(0,3);
+            this.drawSelectors();
         }
         if (this.activeSelector === "box") { 
             this.getNearestPointInBox(this.x,this.y);
-            this.drawSelectors();
-        }
-        if (this.activeSelector) {
             this.selectedColor = this.ctx.getImageData(this.boxSelector[0],this.boxSelector[1],1,1).data.slice(0,3);
+            this.drawSelectors();
         }
     }
 
@@ -155,6 +171,7 @@ class picker {
             this.ctxUI.stroke();
             this.ctxUI.closePath();
         });
+        //bughunt: randomly not getting selectedColor at this point
         this.drawOutput(this.rgb2hex(...this.selectedColor));
     }
 
