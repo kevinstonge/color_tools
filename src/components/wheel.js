@@ -2,6 +2,9 @@ import * as cConvert from '../accessories/colorConversion';
 export default class cWheel {
     constructor(width,height,baseColor,colorCanvas,colorCanvasUI,updateFunction) {
     this.baseColorHSL = baseColor;
+    this.h = baseColor[0];
+    this.s = baseColor[1];
+    this.l = baseColor[2];
     this.baseColorHEX = cConvert.hsl2hex(baseColor);
     this.updateSelectedColor = updateFunction;
     this.colorCanvas = colorCanvas;
@@ -45,8 +48,6 @@ export default class cWheel {
         this.boxSelector = [x,y];
     }
     calculateWheelSelectorPosition(color) {
-        // let hexRegex = /^#([0-9a-f]{3}|[0-9a-f]{6})$/i;
-        // if (color.toString().match(hexRegex)) { color = cConvert.hex2hsl(color) };
         let r = this.wheelRadius;
         let theta = color[0]*Math.PI/180;
         let x = r*Math.cos(theta)+(this.width/2);
@@ -137,12 +138,20 @@ export default class cWheel {
         if (x>this.rightX) { this.x = this.rightX };
         if (y<this.topY) { this.y = this.topY };
         if (y>this.bottomY) { this.y = this.bottomY };
+        this.s = 100*(this.y-this.topY)/(this.bottomY-this.topY);
+        this.l = 100*(this.x-this.leftX)/(this.rightX-this.leftX);
         this.boxSelector = [this.x,this.y];
     }
     getNearestPointOnWheel = (x,y,d) => {
-        this.x = (this.width/2) + this.wheelRadius*x/d;
-        this.y = (this.width/2) + this.wheelRadius*y/d;
-        this.wheelSelector = [this.x,this.y];
+        this.h = (180/Math.PI)*Math.atan(y/x);
+        if (x < 0) { this.h = this.h + 180; }
+        if (y < 0) { this.h = this.h + 360; }
+        this.h = 360-this.h;
+        if (this.h<0) { this.h = 360+this.h }
+        if (this.h===360) { this.h = 0; }
+        x = (this.width/2) + this.wheelRadius*x/d;
+        y = (this.width/2) + this.wheelRadius*y/d;
+        this.wheelSelector = [x,y];
     }
     mouseData = (e) => {
         this.x = e.offsetX;
@@ -170,14 +179,13 @@ export default class cWheel {
         this.mouseData(e);
         if (this.activeSelector === "wheel") {
             this.getNearestPointOnWheel(this.xDist,this.yDist,this.dist);
-            let imgData = this.ctx.getImageData(this.wheelSelector[0],this.wheelSelector[1],1,1).data.slice(0,3); 
-            this.drawInnerBox(cConvert.rgb2hsl(...imgData)[0]);
-            this.selectedColor = cConvert.rgb2hsl(...this.ctx.getImageData(this.boxSelector[0],this.boxSelector[1],1,1).data.slice(0,3));
+            this.drawInnerBox(this.h);
+            this.selectedColor = [this.h,this.s,this.l];
             this.drawSelectors();
         }
         if (this.activeSelector === "box") { 
             this.getNearestPointInBox(this.x,this.y);
-            this.selectedColor = cConvert.rgb2hsl(...this.ctx.getImageData(this.boxSelector[0],this.boxSelector[1],1,1).data.slice(0,3));
+            this.selectedColor = [this.h,this.s,this.l];
             this.drawSelectors();
         }
     }

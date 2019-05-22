@@ -6,18 +6,22 @@ import './ColorTools.css';
 export default class ColorTools extends Component {
   constructor(props) {
     super (props);
-    //baseColor needs to be an HSL array so that h doesn't rest to 0 when s or l reach their extremes.
-    //the rest of the code will need to be revised to account for this change
     this.state = { baseColor:[0,100,50] };
+    this.textColor = (this.state.baseColor[2]>40) ? "black" : "white";
   }
   updateBaseColor = (color) => { 
     if (color === this.state.baseColor) { return; }
     this.setState({baseColor:color});
+    this.textColor = (this.state.baseColor[2]>40) ? "black" : "white";
   }
   render() {
   return (
     <div>
-      <p>current color: {cConvert.hsl2hex(...this.state.baseColor)}</p>
+      <div style={{backgroundColor:cConvert.hsl2hex(...this.state.baseColor),color:this.textColor}}>
+        <p>hex: {cConvert.hsl2hex(...this.state.baseColor)}</p>
+        <p>hsl: {this.state.baseColor.join(",")}</p>
+        <p>rgb: {cConvert.hsl2rgb(...this.state.baseColor).join(",")}</p>
+      </div>
       <ColorWheel updateBaseColor={this.updateBaseColor} baseColor={this.state.baseColor} />
       <HslSliders updateBaseColor={this.updateBaseColor} baseColor={this.state.baseColor} />
     </div>
