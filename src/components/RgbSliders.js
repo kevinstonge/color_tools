@@ -49,16 +49,17 @@ export default class RgbSliders extends Component {
     }
     render() {
         return (
-            <React.Fragment>
+            <div className="colorInputBox">
+            <p>red, green, blue</p>
                 {Object.keys(this.inputs).map(e=>
                         <div className="colorInputRow" key={e[0]}>
                         <label htmlFor={`${e}r}`}>{e} </label>
                         <input name={`${e}r`} id={`${e}r`}  type="range" min="0" max={this.inputs[e]} onChange={this.cChange}/>
-                        <input type="text" id={`${e}t`} min="0" max={this.inputs[e]} size="6" onInput={this.cChange} onFocus={this.cFocus} onBlur={()=>this.buffer=[]}/>
+                        <input type="text" id={`${e}t`} min="0" max={this.inputs[e]} size="4" onInput={this.cChange} onFocus={this.cFocus} onBlur={()=>this.buffer=[]}/>
                         </div>
                     )
                 }
-            </React.Fragment>
+            </div>
         )
     }
     componentDidMount() {

@@ -48,16 +48,17 @@ export default class HslSliders extends Component {
     }
     render() {
         return (
-            <React.Fragment>
+                <div className="colorInputBox">
+                    <p>hue, saturation, luminosity</p>
                 {Object.keys(this.inputs).map(e=>
                         <div className="colorInputRow" key={e[0]}>
                         <label htmlFor={`${e}r}`}>{e} </label>
                         <input name={`${e}r`} id={`${e}r`}  type="range" min="0" max={this.inputs[e]} onChange={this.cChange}/>
-                        <input type="text" id={`${e}t`} min="0" max={this.inputs[e]} size="6" onChange={this.cChange} onFocus={this.cFocus} onBlur={()=>this.buffer=[]}/>
+                        <input type="text" id={`${e}t`} min="0" max={this.inputs[e]} size="4" onChange={this.cChange} onFocus={this.cFocus} onBlur={()=>this.buffer=[]}/>
                         </div>
                     )
                 }
-            </React.Fragment>
+                </div>
         )
     }
     componentDidMount() {

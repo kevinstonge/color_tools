@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
+import ColorPreview from './components/ColorPreview';
 import ColorWheel from './components/ColorWheel';
 import HslSliders from './components/HslSliders';
-import * as cConvert from './accessories/colorConversion';
 import './ColorTools.css';
 import RgbSliders from './components/RgbSliders';
 export default class ColorTools extends Component {
@@ -11,7 +11,6 @@ export default class ColorTools extends Component {
       baseColor:[0,100,50],
       width:300,
     };
-    this.textColor = (this.state.baseColor[2]>40) ? "black" : "white";
   }
   updateBaseColor = (color) => { 
     if (color === this.state.baseColor) { return; }
@@ -25,11 +24,7 @@ export default class ColorTools extends Component {
   return (
     <div id="colorToolsFlexContainer">
       <div id="colorPickers" style={{width:this.state.width}}>
-        <div id="colorOutput" style={{backgroundColor:cConvert.hsl2hex(...this.state.baseColor),color:this.textColor}}>
-          <p>hex: {cConvert.hsl2hex(...this.state.baseColor)}</p>
-          <p>hsl: {this.state.baseColor.join(", ")}</p>
-          <p>rgb: {cConvert.hsl2rgb(...this.state.baseColor).join(", ")}</p>
-        </div>
+        <ColorPreview updateBaseColor={this.updateBaseColor} state={this.state} />
         <ColorWheel updateBaseColor={this.updateBaseColor} state={this.state} />
         <HslSliders updateBaseColor={this.updateBaseColor} state={this.state} />
         <RgbSliders updateBaseColor={this.updateBaseColor} state={this.state} />
