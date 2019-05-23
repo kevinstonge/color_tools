@@ -11,9 +11,9 @@ export function rgb2hsl (r,g,b) {
     if (d===0) { h=0; s=0; }
     if (h<0) { h=h+360; }
     if (d!==0) { s=d/(1-Math.abs(l-1)); }
-    h = Math.round(h,2);
-    s = Math.round(s*100,2);
-    l = Math.round(l*50,2);
+    h = h.toFixed(2);
+    s = (s*100).toFixed(2);
+    l = (l*50).toFixed(2);
     return [h,s,l];
 }
 export function rgb2hex (r, g, b) {

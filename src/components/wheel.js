@@ -90,7 +90,7 @@ export default class cWheel {
         }
     }
     drawOutput = (output) => {
-        output.forEach((e,i)=>output[i]=Number(output[i]).toFixed(0));
+        output.forEach((e,i,a)=>a[i]=Number(a[i]).toFixed(2));
         this.updateSelectedColor(output);
         this.baseColorHEX = cConvert.hsl2hex(...output);
         this.ctxUI.textAlign = 'center';

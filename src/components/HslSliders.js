@@ -4,6 +4,12 @@ export default class HslSliders extends Component {
     constructor(props) {
         super(props);
         this.inputs = [["h",359],["s",100],["l",100]];
+        this.buffer = [];
+    }
+    cFocus = (e) => {
+        e.target.select();
+        const colorVar = e.target.id.substr(0,1);
+        this.buffer = [colorVar,e.target.value];
     }
     cChange = (e) => {
         e.persist();
@@ -11,21 +17,25 @@ export default class HslSliders extends Component {
         const key = e.nativeEvent.data;
         let value = e.target.value;
         const newColor = this.props.baseColor.slice();    
+        if ((key === null || value === null) && e.nativeEvent.inputType.substr(0,6)!=="delete") return;
         if (e.target.type === "text") {
-            if (key === null || value === null) return;
-            value = value.replace(/\./,"").replace(/[\D]/g,"");
-            if (colorVar === "h" && value >= 359) value = 359;
+            value = value.replace(/\./,"[dec]").replace(/\./g,"").replace("[dec]",".").replace(/[^\d.]/g,"");
+            if (colorVar === "h" && value >= 359.99) value = 359.99;
             if ((colorVar === "s" || colorVar === "l") && value > 100) value = 100;
-            e.target.value = value;
+            this.buffer=[colorVar,value];
+            e.target.value = this.buffer[1];
         }
-        newColor["hsl".indexOf(colorVar)] = Number(e.target.value);
-        this.props.updateBaseColor(newColor);
+        if (value) {
+            newColor["hsl".indexOf(colorVar)] = Number(value);
+            this.props.updateBaseColor(newColor);
+        }
     }
 
     setSliders = () => {
         ["h","s","l"].forEach((e,i)=>{
-            document.querySelector("#"+e+"r").value = this.props.baseColor[i];
-            document.querySelector("#"+e+"t").value = this.props.baseColor[i];
+            const value = (e===this.buffer[0]) ? this.buffer[1] : this.props.baseColor[i];
+            document.querySelector("#"+e+"r").value = Number(value);
+            document.querySelector("#"+e+"t").value = value;
             }
         );
     }
@@ -39,7 +49,7 @@ export default class HslSliders extends Component {
                         <div className="hslSlider" key={e[0]}>
                         <label htmlFor={`${e[0]}r}`}>{e[0]} </label>
                         <input name={`${e[0]}r`} id={`${e[0]}r`}  type="range" min="0" max={e[1]} onChange={this.cChange}/>
-                        <input type="text" id={`${e[0]}t`} min="0" max={e[1]} onChange={this.cChange}/>
+                        <input type="text" id={`${e[0]}t`} min="0" max={e[1]} onChange={this.cChange} onFocus={this.cFocus} onBlur={()=>this.buffer=[]}/>
                         </div>
                     )
                 }

@@ -40,7 +40,7 @@ export default class RgbSliders extends Component {
                         <div className="hslSlider" key={e[0]}>
                         <label htmlFor={`${e[0]}r}`}>{e[0]} </label>
                         <input name={`${e[0]}r`} id={`${e[0]}r`}  type="range" min="0" max={e[1]} onChange={this.cChange}/>
-                        <input type="text" id={`${e[0]}t`} min="0" max={e[1]} onChange={this.cChange}/>
+                        <input type="text" id={`${e[0]}t`} min="0" max={e[1]} onInput={this.cChange}/>
                         </div>
                     )
                 }
