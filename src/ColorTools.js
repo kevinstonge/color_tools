@@ -3,6 +3,7 @@ import ColorWheel from './components/ColorWheel';
 import HslSliders from './components/HslSliders';
 import * as cConvert from './accessories/colorConversion';
 import './ColorTools.css';
+import RgbSliders from './components/RgbSliders';
 export default class ColorTools extends Component {
   constructor(props) {
     super (props);
@@ -11,6 +12,9 @@ export default class ColorTools extends Component {
   }
   updateBaseColor = (color) => { 
     if (color === this.state.baseColor) { return; }
+    if (color[0] >= 360) { color[0] = 0 }
+    if (color[1] >= 100) { color[1] = 100 }
+    if (color[2] >= 100) { color[2] = 100 }
     this.setState({baseColor:color});
     this.textColor = (this.state.baseColor[2]>40) ? "black" : "white";
   }
@@ -24,6 +28,7 @@ export default class ColorTools extends Component {
       </div>
       <ColorWheel updateBaseColor={this.updateBaseColor} baseColor={this.state.baseColor} />
       <HslSliders updateBaseColor={this.updateBaseColor} baseColor={this.state.baseColor} />
+      <RgbSliders updateBaseColor={this.updateBaseColor} baseColor={this.state.baseColor} />
     </div>
   );
   };

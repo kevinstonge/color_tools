@@ -41,10 +41,8 @@ export default class cWheel {
     this.selfInvoked = false;
     };
     calculateBoxSelectorPosition(color) {
-        let s = color[1];
-        let l = color[2];
-        let x = this.leftX + this.boxWidth * l/100;
-        let y = this.topY + this.boxHeight * s/100;
+        let x = this.leftX + this.boxWidth * this.l/100;
+        let y = this.topY + this.boxHeight * this.s/100;
         this.boxSelector = [x,y];
     }
     calculateWheelSelectorPosition(color) {
@@ -92,6 +90,7 @@ export default class cWheel {
         }
     }
     drawOutput = (output) => {
+        output.forEach((e,i)=>output[i]=Number(output[i]).toFixed(0));
         this.updateSelectedColor(output);
         this.baseColorHEX = cConvert.hsl2hex(...output);
         this.ctxUI.textAlign = 'center';
@@ -125,6 +124,9 @@ export default class cWheel {
     externalInput = (color) => {
         //add color format detection: hex/hsl
         //if (color.match(/^#[0-9a-f]{3,6}$/i)) { color = cConvert.hex2hsl(color); }
+        this.h = color[0];
+        this.s = color[1];
+        this.l = color[2];
         this.baseColorHSL = color;
         this.baseColorHEX = cConvert.hsl2hex(color);
         this.selectedColor = color;

@@ -1,31 +1,32 @@
 import React, { Component } from 'react'
+import {rgb2hsl,hsl2rgb} from '../accessories/colorConversion';
 
-export default class HslSliders extends Component {
+export default class RgbSliders extends Component {
     constructor(props) {
         super(props);
-        this.inputs = [["h",359],["s",100],["l",100]];
+        this.inputs = [["r",255],["g",255],["b",255]];
     }
     cChange = (e) => {
         e.persist();
         const colorVar = e.target.id.substr(0,1); 
         const key = e.nativeEvent.data;
         let value = e.target.value;
-        const newColor = this.props.baseColor.slice();    
+        let newColor = this.baseColorRGB.slice();    
         if (e.target.type === "text") {
             if (key === null || value === null) return;
             value = value.replace(/\./,"").replace(/[\D]/g,"");
-            if (colorVar === "h" && value >= 359) value = 359;
-            if ((colorVar === "s" || colorVar === "l") && value > 100) value = 100;
+            if (value >= 255) value = 255;
             e.target.value = value;
         }
-        newColor["hsl".indexOf(colorVar)] = Number(e.target.value);
-        this.props.updateBaseColor(newColor);
+        newColor["rgb".indexOf(colorVar)] = Number(e.target.value);
+        this.props.updateBaseColor(rgb2hsl(...newColor));
     }
 
     setSliders = () => {
-        ["h","s","l"].forEach((e,i)=>{
-            document.querySelector("#"+e+"r").value = this.props.baseColor[i];
-            document.querySelector("#"+e+"t").value = this.props.baseColor[i];
+        this.baseColorRGB = hsl2rgb(...this.props.baseColor);
+        ["r","g","b"].forEach((e,i)=>{
+            document.querySelector("#"+e+"r").value = this.baseColorRGB[i];
+            document.querySelector("#"+e+"t").value = this.baseColorRGB[i];
             }
         );
     }
