@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import ColorTools from './ColorTools';
 import * as serviceWorker from './serviceWorker';
+import './index.css';
 
 ReactDOM.render(<ColorTools />, document.getElementById('root'));
 

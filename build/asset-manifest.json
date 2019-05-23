@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/color_tools/build/static/css/main.8f264847.chunk.css",
-    "main.js": "/color_tools/build/static/js/main.e8d34164.chunk.js",
-    "main.js.map": "/color_tools/build/static/js/main.e8d34164.chunk.js.map",
+    "main.css": "/color_tools/build/static/css/main.27ae493c.chunk.css",
+    "main.js": "/color_tools/build/static/js/main.755e95cb.chunk.js",
+    "main.js.map": "/color_tools/build/static/js/main.755e95cb.chunk.js.map",
     "runtime~main.js": "/color_tools/build/static/js/runtime~main.98bf1d36.js",
     "runtime~main.js.map": "/color_tools/build/static/js/runtime~main.98bf1d36.js.map",
     "static/js/2.44949046.chunk.js": "/color_tools/build/static/js/2.44949046.chunk.js",
     "static/js/2.44949046.chunk.js.map": "/color_tools/build/static/js/2.44949046.chunk.js.map",
     "index.html": "/color_tools/build/index.html",
-    "precache-manifest.eaaa6da5cf55c3e5cece1bb5d60fb709.js": "/color_tools/build/precache-manifest.eaaa6da5cf55c3e5cece1bb5d60fb709.js",
+    "precache-manifest.1f076a9a588ce104e610944339bc96a0.js": "/color_tools/build/precache-manifest.1f076a9a588ce104e610944339bc96a0.js",
     "service-worker.js": "/color_tools/build/service-worker.js",
-    "static/css/main.8f264847.chunk.css.map": "/color_tools/build/static/css/main.8f264847.chunk.css.map"
+    "static/css/main.27ae493c.chunk.css.map": "/color_tools/build/static/css/main.27ae493c.chunk.css.map"
   }
 }

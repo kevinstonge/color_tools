@@ -5,12 +5,12 @@ import cWheel from './wheel';
 export default class ColorWheel extends Component {
 
     updateSelectedColor = (color) => { 
-        if (color === this.props.baseColor) { return; }
+        if (color === this.props.state.baseColor) { return; }
         this.props.updateBaseColor(color);
     }
     componentDidUpdate() {
         if(this.colorWheel.selfInvoked === false) {
-            this.colorWheel.externalInput(this.props.baseColor);
+            this.colorWheel.externalInput(this.props.state.baseColor);
         }
     }
     render() {
@@ -26,8 +26,7 @@ export default class ColorWheel extends Component {
     componentDidMount() {
         let colorCanvas = document.querySelector("#colorCanvas");
         let colorCanvasUI = document.querySelector("#colorCanvasUI");
-        this.colorWheel = new cWheel(300,300,this.props.baseColor,colorCanvas,colorCanvasUI,this.updateSelectedColor);
-        this.colorWheel.drawOuterWheel();this.colorWheel.drawInnerBox(); this.colorWheel.drawSelectors();
+        this.colorWheel = new cWheel(this.props.state.width,this.props.state.baseColor,colorCanvas,colorCanvasUI,this.updateSelectedColor);
         colorCanvasUI.addEventListener("mousedown",this.colorWheel.mouseDown);
         colorCanvasUI.addEventListener("mousemove",this.colorWheel.mouseMove);
         colorCanvasUI.addEventListener("mouseup",this.colorWheel.mouseUp);
