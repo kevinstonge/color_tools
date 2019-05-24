@@ -18,7 +18,7 @@ export default class ColorWheel extends Component {
             <React.Fragment>
             <div id="canvasContainer">
                 <canvas id="colorCanvas"></canvas>
-                <canvas id="colorCanvasUI"></canvas>
+                <canvas id="colorCanvasUI" tabIndex="1" style={{outline:"none"}}></canvas>
             </div>
             </React.Fragment>
         );

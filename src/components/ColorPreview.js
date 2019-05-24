@@ -4,64 +4,53 @@ import * as cConvert from '../accessories/colorConversion';
 export default class ColorPreview extends Component {
     constructor(props) {
         super(props);
-        this.buffer="";
+        this.buffer=[];
         this.colorData={
-            "hex":()=>cConvert.hsl2hex(...this.props.state.baseColor),
-            "hsl":()=>this.props.state.baseColor.join(", "),
-            "rgb":()=>cConvert.hsl2rgb(...this.props.state.baseColor).join(", ")
+            "hexInput":()=>cConvert.hsl2hex(...this.props.state.baseColor),
+            "hslInput":()=>this.props.state.baseColor.join(", "),
+            "rgbInput":()=>cConvert.hsl2rgb(...this.props.state.baseColor).join(", ")
         };
+        this.colorTest={
+            "hexInput":(input)=>{
+                return (input.match(/^#{0,1}[0-9a-f]{6}$/i)) ? cConvert.hex2hsl(input) : null;
+            },
+            "hslInput":(input)=>{
+                let tempColor = input.match(/(\d*\.{0,1}\d*)/g);
+                tempColor = (tempColor) ? tempColor.filter(Boolean) : ""; 
+                if (tempColor.length===3 && tempColor[0]<360 && tempColor[1]<=100 && tempColor[2]<=100) {
+                    return [tempColor[0],tempColor[1],tempColor[2]];
+                }
+            },
+            "rgbInput":(input)=>{
+                let tempColor = input.match(/\d{1,3}/g);
+                tempColor = (tempColor) ? tempColor.filter(Boolean) : "";
+                if (tempColor.length===3 && tempColor[0]<=255 && tempColor[1]<=255 && tempColor[2]<=255) {
+                    return cConvert.rgb2hsl(tempColor[0],tempColor[1],tempColor[2]);
+                }
+            }
+        }
+        this.colorHelp={
+            "hexInput":"enter six-digit hexidecimal values with no spaces, # prefix is optional",
+            "hslInput":"enter three values separated by spaces or commas, first value is hue and must be less than 360, second value is saturation and must be less than or equal to 100, third value is luminosity and must be less than or equal to 100. Decimals values can be used",
+            "rgbInput":"enter three values separated by spaces or commas, each value must be less than or equal to 255"
+        }
     } 
     iChange = (e) => {
         e.persist();
-        let newColor = null;
         let input = e.target.value;
-        if (input === "") { return; }
-        if (e.nativeEvent.data === ".") {
-            let charAfterCarat = input[e.target.selectionStart];
-            if (charAfterCarat === undefined) { return; }
-            else if (charAfterCarat.match(/^[0-9]/)===null) { return; }
+        let newColor = this.colorTest[e.target.id](input);
+        if (newColor) {
+            document.querySelector(`#${e.target.id}Help`).innerText = "❔";
+            this.props.updateBaseColor(newColor);
         }
-        if (e.target.id === "hexInput") {
-            if (input.match(/^#{0,1}[0-9a-f]{6}$/i)) { 
-                document.querySelector("#hexhelp").innerText = "❔";
-                newColor = cConvert.hex2hsl(input);
-            }
-            else { 
-                document.querySelector("#hexhelp").innerText = "❓";
-            }
+        else {
+            document.querySelector(`#${e.target.id}Help`).innerText = "❓";
         }
-        if (e.target.id === "hslInput") {
-            let tempColor = input.match(/(\d*\.{0,1}\d*)/g);
-            if (tempColor) { 
-                tempColor = tempColor.filter(Boolean); 
-                if (tempColor[0]<360 && tempColor[1]<=100 && tempColor[2]<=100) {
-                    document.querySelector("#hslhelp").innerText = "❔";
-                    newColor = tempColor.slice(0,3);
-                }
-                else {
-                    document.querySelector("#hslhelp").innerText = "❓";
-                }
-            }
-        }
-        if (e.target.id === "rgbInput") {
-            let tempColor = input.match(/\d{1,3}/g);
-            if (tempColor) { 
-                tempColor = tempColor.filter(Boolean); 
-                if (tempColor[0]<=255 && tempColor[1]<=255 && tempColor[2]<=255) {
-                    document.querySelector("#rgblhelp").innerText = "❔";
-                    newColor = cConvert.rgb2hsl(...tempColor.slice(0,3));
-                }
-                else {
-                    document.querySelector("#rgbhelp").innerText = "❓";
-                }
-            }
-        }
-        if (newColor) { this.props.updateBaseColor(newColor); }
-    }
 
+    }
     iFocus = (e) => {
         e.target.select();
-        this.buffer = e.target.value;
+        this.buffer = [e.target.id,e.target.value];
     }
 
     getData = (type) => { 
@@ -75,13 +64,19 @@ export default class ColorPreview extends Component {
     }
     updateInputs = () => {
         Object.keys(this.colorData).forEach(e=>{
-            document.querySelector(`#${e}Input`).value = this.getData(e)
+            if (this.buffer[0]!==e) {
+                document.querySelector(`#${e}`).value = this.getData(e);
+                document.querySelector(`#${e}Help`).innerText = "❔";
+            }
         })
     }
     copyColor = (e) => {
-        document.querySelector(`#${e.target.id.slice(4)}`).select();
+        let elementToCopy = `#${e.target.id.replace("Copy","")}`;
+        let copyIconElement = `#${e.target.id}`;
+        document.querySelector(elementToCopy).select();
         document.execCommand("copy");
-        //briefly show the ✔️ emoji in place of the clipboard emoji
+        document.querySelector(copyIconElement).innerText = "✔️";
+        setTimeout(()=>{document.querySelector(copyIconElement).innerText = "📋"},500);
     }
     render() {
         return (
@@ -89,11 +84,10 @@ export default class ColorPreview extends Component {
             <div id="colorOutput" style={this.getData("style")}>
                 {Object.keys(this.colorData).map(e=>
                     <p key={e}>
-                    <label htmlFor={`${e}Input`}>{e}: 
-                    <input id={`${e}Input`} type="text" size="16" onChange={this.iChange} onFocus={this.iFocus} onBlur={()=>{this.buffer=""}} style={this.getData("style")} />
-                    {/* ❓ ❔ */}
-                    <span role="img" arei-label="help" aria-hidden="true" id={`${e}help`} title="">❔</span>
-                    <span role="img" arei-label="copy" aria-hidden="true" id={`copy${e}Input`} title="copy" onClick={this.copyColor}>📋</span>
+                    <label htmlFor={e}>{e}: 
+                    <input id={e} type="text" size="16" onChange={this.iChange} onFocus={this.iFocus} onBlur={()=>{this.buffer=[]}} style={this.getData("style")} />
+                    <span role="img" arei-label="help" aria-hidden="true" id={`${e}Help`} title={this.colorHelp[e]}>❔</span>
+                    <span role="img" arei-label="copy" aria-hidden="true" id={`${e}Copy`} title="copy" onClick={this.copyColor}>📋</span>
                     </label>
                     </p>
                 )}
@@ -102,7 +96,7 @@ export default class ColorPreview extends Component {
         )
     }
     componentDidMount() {
-         this.updateInputs();
+        this.updateInputs();
     }
     componentDidUpdate() {
         this.updateInputs();

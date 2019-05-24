@@ -168,6 +168,7 @@ export default class cWheel {
     }
     mouseDown = (e) => {
         e.preventDefault();
+        document.querySelector("#colorCanvasUI").focus();
         this.selfInvoked = true;
         this.mouseData(e);
         if (this.dist > this.innerRadius && this.dist < this.outerRadius) { 
