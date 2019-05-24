@@ -158,8 +158,15 @@ export default class cWheel {
         this.wheelSelector = [x,y];
     }
     mouseData = (e) => {
-        this.x = e.offsetX;
-        this.y = e.offsetY;
+        if (e.touches) {
+            let rect = e.target.getBoundingClientRect();
+            this.x = e.targetTouches[0].pageX - rect.left;
+            this.y = e.targetTouches[0].pageY - rect.top;
+        }
+        else {
+            this.x = e.offsetX;
+            this.y = e.offsetY;
+        }
         this.xDist = this.x - this.width/2;
         this.yDist = this.y - this.height/2;
         this.dist = Math.sqrt(this.xDist**2 + this.yDist**2);
@@ -180,7 +187,7 @@ export default class cWheel {
         else { this.activeSelector = null; }
     }
     mouseMove = (e) => {
-        if (e.buttons === 0) { return; }
+        if (e.buttons === 0 || this.activeSelector === "null") { return; }
         this.mouseData(e);
         if (this.activeSelector === "wheel") {
             this.getNearestPointOnWheel(this.xDist,this.yDist,this.dist);
@@ -194,6 +201,7 @@ export default class cWheel {
     }
     mouseUp = () => {
         this.updateSelectedColor(this.selectedColor);
+        this.activeSelector = null;
         this.selfInvoked = false;
     }
 }

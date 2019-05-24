@@ -30,7 +30,10 @@ export default class ColorWheel extends Component {
         colorCanvasUI.addEventListener("mousedown",this.colorWheel.mouseDown);
         colorCanvasUI.addEventListener("mousemove",this.colorWheel.mouseMove);
         colorCanvasUI.addEventListener("mouseup",this.colorWheel.mouseUp);
-        //add touchevents!
+        colorCanvasUI.addEventListener("touchstart",this.colorWheel.mouseDown,{ passive: false });
+        colorCanvasUI.addEventListener("touchmove",this.colorWheel.mouseMove,{ passive: false });
+        colorCanvasUI.addEventListener("touchend",this.colorWheel.mouseUp);
+
     }
 };
 
