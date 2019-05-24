@@ -126,8 +126,6 @@ export default class cWheel {
         this.drawOutput(this.selectedColor);
     }
     externalInput = (color) => {
-        //add color format detection: hex/hsl
-        //if (color.match(/^#[0-9a-f]{3,6}$/i)) { color = cConvert.hex2hsl(color); }
         this.h = color[0];
         this.s = color[1];
         this.l = color[2];
@@ -187,14 +185,12 @@ export default class cWheel {
         if (this.activeSelector === "wheel") {
             this.getNearestPointOnWheel(this.xDist,this.yDist,this.dist);
             this.drawInnerBox(this.h);
-            this.selectedColor = [this.h,this.s,this.l];
-            this.drawSelectors();
         }
         if (this.activeSelector === "box") { 
             this.getNearestPointInBox(this.x,this.y);
-            this.selectedColor = [this.h,this.s,this.l];
-            this.drawSelectors();
         }
+        this.selectedColor = [this.h,this.s,this.l];
+        this.drawSelectors();
     }
     mouseUp = () => {
         this.updateSelectedColor(this.selectedColor);

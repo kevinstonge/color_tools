@@ -25,7 +25,7 @@ export default class ColorPreview extends Component {
                 let tempColor = input.match(/\d{1,3}/g);
                 tempColor = (tempColor) ? tempColor.filter(Boolean) : "";
                 if (tempColor.length===3 && tempColor[0]<=255 && tempColor[1]<=255 && tempColor[2]<=255) {
-                    return cConvert.rgb2hsl(tempColor[0],tempColor[1],tempColor[2]); //git throwing error here!
+                    return cConvert.rgb2hsl(tempColor[0],tempColor[1],tempColor[2]);
                 }
             }
         }
