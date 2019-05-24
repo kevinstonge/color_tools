@@ -53,9 +53,10 @@ export default class RgbSliders extends Component {
             <p>red, green, blue</p>
                 {Object.keys(this.inputs).map(e=>
                         <div className="colorInputRow" key={e[0]}>
-                        <label htmlFor={`${e}r}`}>{e} </label>
+                        <label htmlFor={`${e}t}`}>{e} 
                         <input name={`${e}r`} id={`${e}r`}  type="range" min="0" max={this.inputs[e]} onChange={this.cChange}/>
                         <input type="text" id={`${e}t`} min="0" max={this.inputs[e]} size="4" onInput={this.cChange} onFocus={this.cFocus} onBlur={()=>this.buffer=[]}/>
+                        </label>
                         </div>
                     )
                 }

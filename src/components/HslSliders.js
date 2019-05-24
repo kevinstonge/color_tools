@@ -38,8 +38,8 @@ export default class HslSliders extends Component {
     setSliders = () => {
         ["h","s","l"].forEach((e,i)=>{
             const value = (e===this.buffer[0]) ? this.buffer[1] : this.props.state.baseColor[i];
-            document.querySelector("#"+e+"r").value = Number(value);
-            document.querySelector("#"+e+"t").value = value;
+            document.querySelector(`#${e}r`).value = Number(value);
+            document.querySelector(`#${e}t`).value = value;
             }
         );
     }
@@ -52,9 +52,10 @@ export default class HslSliders extends Component {
                     <p>hue, saturation, luminosity</p>
                 {Object.keys(this.inputs).map(e=>
                         <div className="colorInputRow" key={e[0]}>
-                        <label htmlFor={`${e}r}`}>{e} </label>
-                        <input name={`${e}r`} id={`${e}r`}  type="range" min="0" max={this.inputs[e]} onChange={this.cChange}/>
+                        <label htmlFor={`${e}t`}>{e} 
+                        <input name={`${e}t`} id={`${e}r`}  type="range" min="0" max={this.inputs[e]} onChange={this.cChange}/>
                         <input type="text" id={`${e}t`} min="0" max={this.inputs[e]} size="4" onChange={this.cChange} onFocus={this.cFocus} onBlur={()=>this.buffer=[]}/>
+                        </label>
                         </div>
                     )
                 }

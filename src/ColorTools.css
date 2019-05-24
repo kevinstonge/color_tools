@@ -6,11 +6,19 @@
     flex-direction: row;
     height: 100%;
 }
-#colorOutput { margin: 0.25em; padding: 0.25em; border: 1px solid white; text-align: center; }
+#colorOutput { margin: 0.25em; padding: 0.25em; border: 1px solid #333; text-align: center; }
 #colorOutput p { margin: 0; padding: 0; font-weight: bold; }
+
+#colorOutput input {
+    font-weight:"bold";
+    margin:0.1em 0.5em;
+    padding: 0.2em 0.2em 0.1em 0.2em;
+    border: 1px solid #555;
+}
 .colorInputBox { text-align: center; border: 1px solid #777; padding: 0.25em 0.5em; margin: 0.5em 0.1em; border-radius: 0.25em; }
 .colorInputBox p { margin: 0.1em; padding: 0.1em; border-bottom: 1px dashed #777; }
 .colorInputRow input[type=range] {
+    margin-left: 0.5em;
     -webkit-appearance: none;
     appearance: none;
     background: #353535; 
@@ -42,15 +50,15 @@
     margin-left: 0.25em;
 }
 .colorInputRow label {
-    flex: 0 0 1em;
-    vertical-align: middle;
-}
-.colorInputRow * { height: 100%; }
-.colorInputRow {
-    padding: 0.5em 0;
     width: 100%;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     align-items: stretch;
+    
+}
+.colorInputRow * { height: 100%; }
+.colorInputRow {
+    padding: 0.5em 0;
+    width: 100%;
 }

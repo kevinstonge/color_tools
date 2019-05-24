@@ -1,15 +1,15 @@
 {
   "files": {
-    "main.css": "/color_tools/build/static/css/main.db9b5609.chunk.css",
-    "main.js": "/color_tools/build/static/js/main.6670cb71.chunk.js",
-    "main.js.map": "/color_tools/build/static/js/main.6670cb71.chunk.js.map",
+    "main.css": "/color_tools/build/static/css/main.150c9763.chunk.css",
+    "main.js": "/color_tools/build/static/js/main.80e4a324.chunk.js",
+    "main.js.map": "/color_tools/build/static/js/main.80e4a324.chunk.js.map",
     "runtime~main.js": "/color_tools/build/static/js/runtime~main.98bf1d36.js",
     "runtime~main.js.map": "/color_tools/build/static/js/runtime~main.98bf1d36.js.map",
-    "static/js/2.2f3e9f48.chunk.js": "/color_tools/build/static/js/2.2f3e9f48.chunk.js",
-    "static/js/2.2f3e9f48.chunk.js.map": "/color_tools/build/static/js/2.2f3e9f48.chunk.js.map",
+    "static/js/2.44949046.chunk.js": "/color_tools/build/static/js/2.44949046.chunk.js",
+    "static/js/2.44949046.chunk.js.map": "/color_tools/build/static/js/2.44949046.chunk.js.map",
     "index.html": "/color_tools/build/index.html",
-    "precache-manifest.64fe7ca09e940d6a692e57d4392aeea1.js": "/color_tools/build/precache-manifest.64fe7ca09e940d6a692e57d4392aeea1.js",
+    "precache-manifest.bbeabd661522e480baa621215a4c8da5.js": "/color_tools/build/precache-manifest.bbeabd661522e480baa621215a4c8da5.js",
     "service-worker.js": "/color_tools/build/service-worker.js",
-    "static/css/main.db9b5609.chunk.css.map": "/color_tools/build/static/css/main.db9b5609.chunk.css.map"
+    "static/css/main.150c9763.chunk.css.map": "/color_tools/build/static/css/main.150c9763.chunk.css.map"
   }
 }
