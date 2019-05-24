@@ -52,7 +52,7 @@ export function hex2rgb (hex) {
     return [r,g,b];
 }
 export function hex2hsl (hex) {
-    return this.rgb2hsl(...this.hex2rgb(hex));
+    return rgb2hsl(...hex2rgb(hex));
 }
 export function hsl2hex(h,s,l) {
 	return rgb2hex(...hsl2rgb(h,s,l));
