@@ -33,7 +33,7 @@ export default class Harmonic extends Component {
             }
         }
         this.state = {
-            "Palette Mode": "Complementary",
+            "Palette Mode": "Tetradic rectangle",
             "Saturation Steps": 5,
             "Luminosity Steps": 5,
             "Copied format": "hex"
@@ -43,10 +43,22 @@ export default class Harmonic extends Component {
 
     }
     generatePalette = () => {
-    // blocks with different base hues from harmonies //==length of paletteMode
-    //     row with harmony.length through which luminosity changes
-    //     columns through which saturation changes
-        return [0,3,6,15];
+        // blocks with different base hues from harmonies //==length of paletteMode
+        //     row with harmony.length through which luminosity changes
+        //     columns through which saturation changes
+        let palette = {};
+        Object.values(this.settings["Palette Mode"][this.state["Palette Mode"]]).forEach((e,i)=>{
+            palette[`hue${i}`] = {};
+            for (let j=0;j<=this.state["Saturation Steps"];j++) {
+                let saturation = 100*(this.state["Saturation Steps"]-j)/this.state["Saturation Steps"];
+                palette[`hue${i}`][`saturation${j}`] = {};
+                for (let k=0;k<=this.state["Luminosity Steps"];k++) {
+                    let luminosity = 100*(this.state["Luminosity Steps"]-k)/this.state["Luminosity Steps"];
+                    palette[`hue${i}`][`saturation${j}`][`luminosity${k}`] = [e,`${saturation}%`,`${luminosity}%`];
+                }
+            }
+        });
+        return palette;
     }
 
     render() {
@@ -54,12 +66,19 @@ export default class Harmonic extends Component {
             <div>
                 <h2>harmonic palette</h2>
                 <p>mode: {this.state["Palette Mode"]} ({this.settings["Palette Mode"][this.state["Palette Mode"]].join(", ")})</p>
-                <p>
-                    {this.generatePalette().map(
-                            e=>
-                            <p>{e}</p>
+                <div>
+                    {Object.values(this.generatePalette()).map((h,i)=>
+                        <div key={`h${i}`}>
+                        {Object.values(h).map((s,j)=>
+                            <div key={`h${i}s${j}`}>
+                                {Object.values(s).map((l,k)=>
+                                    <div key={`h${i}s${j}l${k}`} style={{backgroundColor:`hsla(${l.join(",")},1)`}}>{`hsla(${l.join(",")},0)`}</div>
+                                )}
+                            </div>
+                        )}
+                        </div>
                     )}
-                </p>
+                </div>
             </div>
         )
     }
