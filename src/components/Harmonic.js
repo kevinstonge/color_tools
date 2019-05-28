@@ -14,17 +14,17 @@ export default class Harmonic extends Component {
                 "Tetradic square": [0,90,180,270],
                 "Complementary split": [0,150,210],
                 "Complementary with split": [0,150,180,210],
-                "Custom": []
+                // "Custom": []
             },
             "Saturation Steps": {
                 type: "range",
-                min: 0,
-                max: 10
+                min: 1,
+                max: 7
             },
             "Luminosity Steps": {
                 type: "range",
-                min: 0,
-                max: 10
+                min: 1,
+                max: 7
             },
             "Copied format": {
                 type: "list",
@@ -34,14 +34,19 @@ export default class Harmonic extends Component {
             }
         }
         this.state = {
-            "Palette Mode": "Triadic",
-            "Saturation Steps": 3,
-            "Luminosity Steps": 3,
+            "Palette Mode": "Complementary with split",
+            "Saturation Steps": 4,
+            "Luminosity Steps": 4,
             "Copied format": "hex"
         }
     }
-    updateState = () => {
-
+    updateState = (e) => {
+        e.persist();
+        let newState = this.state;
+        let value = e.target.value;
+        if (value.match(/\d+/g)) { value = Number(value) }
+        newState[e.target.name] = value;
+        this.setState(newState);
     }
     generatePalette = () => {
         let palette = {};
@@ -52,7 +57,7 @@ export default class Harmonic extends Component {
                 palette[`hue${i}`][`saturation${j}`] = {};
                 for (let k=1;k<=this.state["Luminosity Steps"];k++) {
                     let luminosity = 100*(1+this.state["Luminosity Steps"]-k)/(1+this.state["Luminosity Steps"]);
-                    palette[`hue${i}`][`saturation${j}`][`luminosity${k}`] = [cConvert.hueReset(this.props.globalState.baseColor[0]+e).toFixed(2),`${saturation.toFixed(2)}%`,`${luminosity.toFixed(2)}%`];
+                    palette[`hue${i}`][`saturation${j}`][`luminosity${k}`] = [cConvert.hueReset(Number(this.props.globalState.baseColor[0])+e).toFixed(2),`${Number(saturation).toFixed(2)}%`,`${Number(luminosity).toFixed(2)}%`];
                 }
             }
         });
@@ -62,8 +67,25 @@ export default class Harmonic extends Component {
     render() {
         return (
             <div>
-                <h2>harmonic palette</h2>
-                <p>mode: {this.state["Palette Mode"]} ({this.settings["Palette Mode"][this.state["Palette Mode"]].join(", ")})</p>
+                <h2>harmonic color palettes</h2>
+                <div className="paletteSettings">
+                    {Object.keys(this.state).map(e=>
+                        <div key={`set${e}`} className={`paletteSetting`}>
+                        <label htmlFor={e}>{e}
+                            {(this.settings[e].type === "list") ? 
+                                Object.keys(this.settings[e]).map((f,i)=>{
+                                    if (i===0) { return `:` }
+                                    else { 
+                                        return <label key={f}><input id={f} name={e} value={f} type="radio" onChange={this.updateState}/>{f} </label> 
+                                    }
+                                })
+                                : 
+                                <React.Fragment> ({this.state[e]}): <input type="range" name={e} min={this.settings[e]["min"]} max={this.settings[e]["max"]} value={this.state[e]} onChange={this.updateState}/></React.Fragment>
+                            }
+                        </label>
+                        </div>
+                    )}
+                </div>
                 <div className="paletteContainer">
                     {Object.values(this.generatePalette()).map((h,i)=>
                         <div key={`h${i}`} className="paletteBlock">
@@ -85,4 +107,5 @@ export default class Harmonic extends Component {
             </div>
         )
     }
+
 }
