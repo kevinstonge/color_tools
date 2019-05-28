@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-
+import React, { Component } from 'react';
+import '../components/colorSliders.css';
 
 export default class HslSliders extends Component {
     constructor(props) {

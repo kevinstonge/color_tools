@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ColorPreview from './components/ColorPreview';
 import ColorWheel from './components/ColorWheel';
 import HslSliders from './components/HslSliders';
+import ColorPalette from './components/ColorPalette';
 import './ColorTools.css';
 import RgbSliders from './components/RgbSliders';
 export default class ColorTools extends Component {
@@ -29,6 +30,9 @@ export default class ColorTools extends Component {
         <ColorWheel updateBaseColor={this.updateBaseColor} state={this.state} />
         <HslSliders updateBaseColor={this.updateBaseColor} state={this.state} />
         <RgbSliders updateBaseColor={this.updateBaseColor} state={this.state} />
+      </div>
+      <div className="colorPalette">
+        <ColorPalette state={this.state}/>
       </div>
     </div>
   );

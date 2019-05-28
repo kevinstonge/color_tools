@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import * as cConvert from '../accessories/colorConversion';
+import '../components/ColorPreview.css';
 
 export default class ColorPreview extends Component {
     constructor(props) {
@@ -84,7 +85,7 @@ export default class ColorPreview extends Component {
             <div id="colorOutput" style={this.getData("style")}>
                 {Object.keys(this.colorData).map(e=>
                     <p key={e}>
-                    <label htmlFor={e}>{e}: 
+                    <label htmlFor={e}>{e.replace("Input",":")} 
                     <input id={e} type="text" size="16" onChange={this.iChange} onFocus={this.iFocus} onBlur={()=>{this.buffer=[]}} style={this.getData("style")} />
                     <span role="img" arei-label="help" aria-hidden="true" id={`${e}Help`} title={this.colorHelp[e]}>❔</span>
                     <span role="img" arei-label="copy" aria-hidden="true" id={`${e}Copy`} title="copy" onClick={this.copyColor}>📋</span>

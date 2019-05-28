@@ -60,7 +60,7 @@ export default class cWheel {
         for (let row = this.topY; row <= this.bottomY; row++) { 
             let rowPercent = 100*(row-this.topY)/(this.bottomY-this.topY);
             let boxGradient = this.ctx.createLinearGradient(this.leftX,row,this.rightX,row);
-            let steps = 10; //ten gradient steps produces good balance of performance and accuracy
+            let steps = 3; //adding more steps may improve appearance at the cost of performance on slower devices
             for (let i=0; i<=steps; i++) { 
                 boxGradient.addColorStop(i/steps,`hsla(${baseHue},${rowPercent}%,${100*i/steps}%,1)`);
             }
