@@ -1,0 +1,20 @@
+.paletteContainer {
+    display: flex;
+    flex-wrap: wrap;
+}
+.paletteBlock {
+    margin: 0.5em;
+}
+.paletteRow {
+    display: flex;
+}
+.paletteBox {
+    width: 2em; 
+    height: 2em;
+    overflow: hidden;
+    border: 0.01em solid #777;
+}
+.paletteBox:hover {
+    border: 0.01em solid #fff;
+    cursor: pointer;
+}

@@ -57,3 +57,9 @@ export function hex2hsl (hex) {
 export function hsl2hex(h,s,l) {
 	return rgb2hex(...hsl2rgb(h,s,l));
 }
+export function hueReset(hue) {
+    while (hue >= 360) {
+        hue = hue - 360;
+    }
+    return hue;
+}

@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import * as cConvert from '../accessories/colorConversion';
 
 export default class Harmonic extends Component {
     constructor(props) {
@@ -27,15 +28,15 @@ export default class Harmonic extends Component {
             },
             "Copied format": {
                 type: "list",
-                "hex":(color)=>{return color}, //import conlorConversion.js and change this
+                "hex":(color)=>{return cConvert.hsl2hex(color)},
                 "hsl":(color)=>{return color},
-                "rgb":(color)=>{return color},
+                "rgb":(color)=>{return cConvert.hsl2rgb(color)},
             }
         }
         this.state = {
-            "Palette Mode": "Tetradic rectangle",
-            "Saturation Steps": 5,
-            "Luminosity Steps": 5,
+            "Palette Mode": "Triadic",
+            "Saturation Steps": 3,
+            "Luminosity Steps": 3,
             "Copied format": "hex"
         }
     }
@@ -43,18 +44,15 @@ export default class Harmonic extends Component {
 
     }
     generatePalette = () => {
-        // blocks with different base hues from harmonies //==length of paletteMode
-        //     row with harmony.length through which luminosity changes
-        //     columns through which saturation changes
         let palette = {};
         Object.values(this.settings["Palette Mode"][this.state["Palette Mode"]]).forEach((e,i)=>{
             palette[`hue${i}`] = {};
-            for (let j=0;j<=this.state["Saturation Steps"];j++) {
+            for (let j=0;j<=this.state["Saturation Steps"]-1;j++) {
                 let saturation = 100*(this.state["Saturation Steps"]-j)/this.state["Saturation Steps"];
                 palette[`hue${i}`][`saturation${j}`] = {};
-                for (let k=0;k<=this.state["Luminosity Steps"];k++) {
-                    let luminosity = 100*(this.state["Luminosity Steps"]-k)/this.state["Luminosity Steps"];
-                    palette[`hue${i}`][`saturation${j}`][`luminosity${k}`] = [e,`${saturation}%`,`${luminosity}%`];
+                for (let k=1;k<=this.state["Luminosity Steps"];k++) {
+                    let luminosity = 100*(1+this.state["Luminosity Steps"]-k)/(1+this.state["Luminosity Steps"]);
+                    palette[`hue${i}`][`saturation${j}`][`luminosity${k}`] = [cConvert.hueReset(this.props.globalState.baseColor[0]+e).toFixed(2),`${saturation.toFixed(2)}%`,`${luminosity.toFixed(2)}%`];
                 }
             }
         });
@@ -66,13 +64,18 @@ export default class Harmonic extends Component {
             <div>
                 <h2>harmonic palette</h2>
                 <p>mode: {this.state["Palette Mode"]} ({this.settings["Palette Mode"][this.state["Palette Mode"]].join(", ")})</p>
-                <div>
+                <div className="paletteContainer">
                     {Object.values(this.generatePalette()).map((h,i)=>
-                        <div key={`h${i}`}>
+                        <div key={`h${i}`} className="paletteBlock">
                         {Object.values(h).map((s,j)=>
-                            <div key={`h${i}s${j}`}>
+                            <div key={`h${i}s${j}`} className="paletteRow">
                                 {Object.values(s).map((l,k)=>
-                                    <div key={`h${i}s${j}l${k}`} style={{backgroundColor:`hsla(${l.join(",")},1)`}}>{`hsla(${l.join(",")},0)`}</div>
+                                    <div 
+                                        key={`h${i}s${j}l${k}`} 
+                                        className="paletteBox" 
+                                        style={{backgroundColor:`hsl(${l.join(",")})`}}
+                                        title={`click to copy:\n ${l.join(", ")}`}
+                                    ></div>
                                 )}
                             </div>
                         )}

@@ -6,3 +6,6 @@
     flex-direction: row;
     height: 100%;
 }
+.colorPalette {
+    overflow-y: auto;
+}
