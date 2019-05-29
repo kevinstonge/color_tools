@@ -15,7 +15,7 @@ export default class ColorPalette extends Component {
     render() {
         return (
             <React.Fragment>
-                {React.createElement(this.state.mode,{paletteState:this.state,globalState:this.props.state})}
+                {React.createElement(this.state.mode,{paletteState:this.state,globalState:this.props.state,updateBaseColor:this.props.updateBaseColor})}
             </React.Fragment>
         )
     }

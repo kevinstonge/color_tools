@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import * as cConvert from '../accessories/colorConversion';
+import copyToClipboard from '../accessories/copyToClipboard';
 
 export default class Harmonic extends Component {
     constructor(props) {
@@ -7,13 +8,13 @@ export default class Harmonic extends Component {
         this.settings = {
             "Palette Mode": {
                 type: "list",
-                "Complementary": [0,180],
                 "Analogous": [0,30,330],
-                "Triadic": [0,120,240],
-                "Tetradic rectangle": [0,30,60,210,240],
-                "Tetradic square": [0,90,180,270],
+                "Complementary": [0,180],
                 "Complementary split": [0,150,210],
                 "Complementary with split": [0,150,180,210],
+                "Tetradic rectangle": [0,30,60,210,240],
+                "Tetradic square": [0,90,180,270],
+                "Triadic": [0,120,240],
                 // "Custom": []
             },
             "Saturation Steps": {
@@ -28,13 +29,13 @@ export default class Harmonic extends Component {
             },
             "Copied format": {
                 type: "list",
-                "hex":(color)=>{return cConvert.hsl2hex(color)},
+                "hex":(color)=>{return cConvert.hsl2hex(...color)},
                 "hsl":(color)=>{return color},
-                "rgb":(color)=>{return cConvert.hsl2rgb(color)},
+                "rgb":(color)=>{return cConvert.hsl2rgb(...color)},
             }
         }
         this.state = {
-            "Palette Mode": "Complementary with split",
+            "Palette Mode": "Analogous",
             "Saturation Steps": 4,
             "Luminosity Steps": 4,
             "Copied format": "hex"
@@ -48,22 +49,10 @@ export default class Harmonic extends Component {
         newState[e.target.name] = value;
         this.setState(newState);
     }
-    generatePalette = () => {
-        let palette = {};
-        Object.values(this.settings["Palette Mode"][this.state["Palette Mode"]]).forEach((e,i)=>{
-            palette[`hue${i}`] = {};
-            for (let j=0;j<=this.state["Saturation Steps"]-1;j++) {
-                let saturation = 100*(this.state["Saturation Steps"]-j)/this.state["Saturation Steps"];
-                palette[`hue${i}`][`saturation${j}`] = {};
-                for (let k=1;k<=this.state["Luminosity Steps"];k++) {
-                    let luminosity = 100*(1+this.state["Luminosity Steps"]-k)/(1+this.state["Luminosity Steps"]);
-                    palette[`hue${i}`][`saturation${j}`][`luminosity${k}`] = [cConvert.hueReset(Number(this.props.globalState.baseColor[0])+e).toFixed(2),`${Number(saturation).toFixed(2)}%`,`${Number(luminosity).toFixed(2)}%`];
-                }
-            }
-        });
-        return palette;
+    paletteBoxClick = (e,copyString,hslArray) => {
+        e.persist();
+        (e.ctrlKey) ? this.props.updateBaseColor(hslArray) : copyToClipboard(copyString);
     }
-
     render() {
         return (
             <div>
@@ -76,7 +65,18 @@ export default class Harmonic extends Component {
                                 Object.keys(this.settings[e]).map((f,i)=>{
                                     if (i===0) { return `:` }
                                     else { 
-                                        return <label key={f}><input id={f} name={e} value={f} type="radio" onChange={this.updateState}/>{f} </label> 
+                                        return (
+                                            <label key={f}>
+                                                <input 
+                                                    id={f} 
+                                                    name={e} 
+                                                    value={f} 
+                                                    type="radio" 
+                                                    onChange={this.updateState}
+                                                    checked={(f===this.state[e]) ? true : false}
+                                                />{f}
+                                            </label>
+                                        );
                                     }
                                 })
                                 : 
@@ -87,25 +87,38 @@ export default class Harmonic extends Component {
                     )}
                 </div>
                 <div className="paletteContainer">
-                    {Object.values(this.generatePalette()).map((h,i)=>
+                    {Object.values(this.settings["Palette Mode"][this.state["Palette Mode"]]).map((h,i)=>{
+                        let hue = cConvert.hueReset(Number(this.props.globalState.baseColor[0])+h).toFixed(2);
+                        return (
                         <div key={`h${i}`} className="paletteBlock">
-                        {Object.values(h).map((s,j)=>
+                        
+                        {Array(this.state["Saturation Steps"]).fill("0").map((s,j)=>{
+                            let saturation = Number(100*(j+1)/this.state["Saturation Steps"]).toFixed(2);
+                            return (
                             <div key={`h${i}s${j}`} className="paletteRow">
-                                {Object.values(s).map((l,k)=>
-                                    <div 
-                                        key={`h${i}s${j}l${k}`} 
-                                        className="paletteBox" 
-                                        style={{backgroundColor:`hsl(${l.join(",")})`}}
-                                        title={`click to copy:\n ${l.join(", ")}`}
-                                    ></div>
-                                )}
+                                
+                                {Array(this.state["Luminosity Steps"]).fill("0").map((l,k)=> {
+                                    let luminosity = Number(100*(k+1)/(1+this.state["Luminosity Steps"])).toFixed(2);
+                                    let clipBoardString = this.settings["Copied format"][this.state["Copied format"]]([hue,saturation,luminosity]);
+                                    return(<div 
+                                        key={`h${i}s${j}l${k}`}
+                                        className="paletteBox"
+                                        style={{backgroundColor:`hsl(${hue},${saturation}%,${luminosity}%)`}}
+                                        title={`click to copy:\n${clipBoardString}`}
+                                        onClick={(e)=>{this.paletteBoxClick(e,clipBoardString,[hue,saturation,luminosity])}}
+                                    >
+                                    </div>);
+                                })}
+
                             </div>
-                        )}
+                            );    
+                        })}
+                        
                         </div>
-                    )}
+                        );
+                    })}
                 </div>
             </div>
         )
     }
-
 }
