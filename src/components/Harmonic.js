@@ -60,13 +60,13 @@ export default class Harmonic extends Component {
                 <div className="paletteSettings">
                     {Object.keys(this.state).map(e=>
                         <div key={`set${e}`} className={`paletteSetting`}>
-                        <label htmlFor={e}>{e}
+                        <span className="paletteSettingLabel">{e}</span>
                             {(this.settings[e].type === "list") ? 
                                 Object.keys(this.settings[e]).map((f,i)=>{
                                     if (i===0) { return `:` }
                                     else { 
                                         return (
-                                            <label key={f}>
+                                            <span className="paletteInputRadioBlock">
                                                 <input 
                                                     id={f} 
                                                     name={e} 
@@ -74,15 +74,15 @@ export default class Harmonic extends Component {
                                                     type="radio" 
                                                     onChange={this.updateState}
                                                     checked={(f===this.state[e]) ? true : false}
-                                                />{f}
-                                            </label>
+                                                />
+                                                <label key={f} for={f} className="paletteInputRadio">{f}</label>
+                                            </span>
                                         );
                                     }
                                 })
                                 : 
                                 <React.Fragment> ({this.state[e]}): <input type="range" name={e} min={this.settings[e]["min"]} max={this.settings[e]["max"]} value={this.state[e]} onChange={this.updateState}/></React.Fragment>
                             }
-                        </label>
                         </div>
                     )}
                 </div>
