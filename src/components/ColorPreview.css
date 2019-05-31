@@ -1,4 +1,4 @@
-#colorOutput { margin: 0.25em; padding: 0.25em; border: 1px solid #333; text-align: center; }
+#colorOutput { padding: 0.25em; border: 1px solid #333; text-align: center; }
 #colorOutput p { margin: 0; padding: 0; font-weight: bold; }
 
 #colorOutput input {

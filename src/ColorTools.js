@@ -31,7 +31,7 @@ export default class ColorTools extends Component {
         <HslSliders updateBaseColor={this.updateBaseColor} state={this.state} />
         <RgbSliders updateBaseColor={this.updateBaseColor} state={this.state} />
       </div>
-      <div className="colorPalette">
+      <div id="colorPalette">
         <ColorPalette updateBaseColor={this.updateBaseColor} state={this.state}/>
       </div>
     </div>

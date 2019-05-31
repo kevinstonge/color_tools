@@ -1,5 +1,14 @@
-.colorPalette h3 {
-    margin: 0.5em;
+#colorPaletteModeButtons {
+    border-bottom: 1px dashed #777;
+    margin-bottom: 0.5em;
+}
+.colorPaletteModeButton input[type=radio] + label {
+    margin-left: 0;
+    margin-right: 0.5em;
+}
+
+#colorPalette h3 {
+    margin: 0;
 }
 
 .paletteSettings {
@@ -14,7 +23,7 @@
     justify-content: space-evenly;
     border: 1px solid #777;
     border-radius: 0.25em;
-    margin: 0.5em;
+    margin: 0.5em 0.5em 0.5em 0;
     padding: 0.25em;
 }
 
