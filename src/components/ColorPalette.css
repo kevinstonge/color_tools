@@ -1,33 +1,87 @@
-.colorPalette h2,label,input {
-    margin: 0.1em;
+.colorPalette h3 {
+    margin: 0.5em;
+}
+
+.paletteSettings {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
 }
 
 .paletteSetting {
-    max-width: 40em;
     display: flex;
     flex-wrap: wrap;
+    justify-content: space-evenly;
     border: 1px solid #777;
     border-radius: 0.25em;
-    margin-top: 0.5em;
+    margin: 0.5em;
     padding: 0.25em;
 }
 
 .paletteSettingLabel {
     font-weight: bold;
+    width: 100%;
+    border-bottom: 1px dashed #777;
+    padding-bottom: 0.2em;
+    margin-bottom: 0.2em;
+    text-align: center;
 }
 
+.paletteSettings input[type=range] {
+    margin-left: 0.5em;
+    -webkit-appearance: none;
+    appearance: none;
+    background: #353535; 
+    outline: none; 
+    border-radius: 0.5em; 
+}
+.paletteSettings input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none; /* Override default */
+    appearance: none;
+    width: 1em; 
+    height: 1em; 
+    background: #777; 
+    cursor: pointer; 
+    border-radius: 0.5em;
+    border: 1px solid #aaa;
+  }
+.paletteSettings input[type=range]:hover {
+    background: #454545;
+ }
+
+
 input[type=radio] + label {
-    color: #bbb;
-    margin-right: 1em;
+    font-size: 0.9em;
+    color: #fff;
+    margin: 0.2em;
+    padding: 0.2em;
+    line-height: 2em;
+    background-color: #444;
+    border: 1px solid #444;
+}
+
+input[type=radio] + label:hover {
+    background-color: #555;
 }
 
 input[type=radio]:checked + label {
     color: #fff;
+    background-color: #777;
+    border: 1px solid #999;
+}
+
+input[type=radio] {
+    display: none;
 }
 
 .paletteInputRadioBlock {
     font-weight: normal;
-    display: inline-block;
+}
+
+.paletteInputRangeBlock {
+    display: flex;
+    justify-content: center;
+    max-width: 4em;
 }
 
 .paletteContainer {

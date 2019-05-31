@@ -74,8 +74,19 @@ export default class ColorPreview extends Component {
     copyColor = (e) => {
         let elementToCopy = `#${e.target.id.replace("Copy","")}`;
         let copyIconElement = `#${e.target.id}`;
-        document.querySelector(elementToCopy).select();
-        document.execCommand("copy");
+        if (elementToCopy[2] === "s") {
+            let hslElement = document.querySelector(elementToCopy);
+            let hslElementOriginalValue = hslElement.value;
+            let hslArray = this.colorTest["hslInput"](hslElement.value);
+            hslElement.value = `${hslArray[0]},${hslArray[1]}%,${hslArray[2]}%`;
+            hslElement.select();
+            document.execCommand("copy");
+            hslElement.value = hslElementOriginalValue;
+        }
+        else {
+            document.querySelector(elementToCopy).select();
+            document.execCommand("copy");
+        }
         document.querySelector(copyIconElement).innerText = "✔️";
         setTimeout(()=>{document.querySelector(copyIconElement).innerText = "📋"},500);
     }

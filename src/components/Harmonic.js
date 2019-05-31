@@ -30,7 +30,7 @@ export default class Harmonic extends Component {
             "Copied format": {
                 type: "list",
                 "hex":(color)=>{return cConvert.hsl2hex(...color)},
-                "hsl":(color)=>{return color},
+                "hsl":(color)=>{return `${color[0]},${color[1]}%,${color[2]}%`},
                 "rgb":(color)=>{return cConvert.hsl2rgb(...color)},
             }
         }
@@ -56,17 +56,17 @@ export default class Harmonic extends Component {
     render() {
         return (
             <div>
-                <h2>harmonic color palettes</h2>
+                <h3>harmonic color palettes</h3>
                 <div className="paletteSettings">
                     {Object.keys(this.state).map(e=>
                         <div key={`set${e}`} className={`paletteSetting`}>
                         <span className="paletteSettingLabel">{e}</span>
                             {(this.settings[e].type === "list") ? 
                                 Object.keys(this.settings[e]).map((f,i)=>{
-                                    if (i===0) { return `:` }
+                                    if (i===0) { return null }
                                     else { 
                                         return (
-                                            <span className="paletteInputRadioBlock">
+                                            <span key={f} className="paletteInputRadioBlock">
                                                 <input 
                                                     id={f} 
                                                     name={e} 
@@ -75,13 +75,24 @@ export default class Harmonic extends Component {
                                                     onChange={this.updateState}
                                                     checked={(f===this.state[e]) ? true : false}
                                                 />
-                                                <label key={f} for={f} className="paletteInputRadio">{f}</label>
+                                                <label key={f} htmlFor={f} className="paletteInputRadio">{f}</label>
                                             </span>
                                         );
                                     }
                                 })
                                 : 
-                                <React.Fragment> ({this.state[e]}): <input type="range" name={e} min={this.settings[e]["min"]} max={this.settings[e]["max"]} value={this.state[e]} onChange={this.updateState}/></React.Fragment>
+                                <React.Fragment>
+                                    <span className="paletteInputRangeBlock">({this.state[e]})
+                                    <input 
+                                        type="range" 
+                                        name={e} 
+                                        min={this.settings[e]["min"]} 
+                                        max={this.settings[e]["max"]} 
+                                        value={this.state[e]} 
+                                        onChange={this.updateState}
+                                    />
+                                    </span>
+                                </React.Fragment>
                             }
                         </div>
                     )}
