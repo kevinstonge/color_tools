@@ -7,32 +7,33 @@ export default class Shading extends Component {
         super(props)
         this.state = {
             // "setting":[min,max,current/default]
-            "relative hue of highlight":[0,359,50],
-            "relative hue of shadow":[-50,50,20],
-            "luminosity contrast": [1,100,1],
-            "saturation contrast": [1,100,20],
-            "palette size": [1,10,10],
+            "highlight temp":[-50,50,20],
+            "shadow temp":[-50,50,-20],
+            "luminosity contrast": [1,10,9],
+            "saturation contrast": [1,10,5],
+            "palette size": [3,100,100],
         }
     }
     calculateColor = (i) => {
         let baseColor = this.props.globalState.baseColor;
-        let highlight = this.state["relative hue of highlight"][2];
-        //highlight should trend towards warmer hues (h=0)
-        let shadow = this.state["relative hue of shadow"][2];
-        //shadow should trend towards cooler hues (h=180)
-        let lcontrast = this.state["luminosity contrast"][2];
-        let scontrast = this.state["saturation contrast"][2];
+        let baseHue = Number(baseColor[0]);
+        let baseSaturation = Number(baseColor[1]);
+        let baseLuminosity = Number(baseColor[2]);
+        let highlight = this.state["highlight temp"][2] * ((baseHue >= 0 && baseHue < 180) ? -1 : 1);
+        let shadow = this.state["shadow temp"][2] * ((baseHue >=0 && baseHue < 180) ? 1 : -1);
+        let lcontrast = 0.1*this.state["luminosity contrast"][2];
+        let scontrast = 0.1*this.state["saturation contrast"][2];
         let paletteSize = this.state["palette size"][2];
         let midPalette = paletteSize/2;
         let hueShift = (i<midPalette) ? shadow : highlight;
-        let h = baseColor[0] + (hueShift*(i-midPalette)/midPalette);
-        let s = baseColor[1] + scontrast*i;
-        let l = baseColor[2] + lcontrast*i;
+        let h = baseHue + (hueShift*(i-midPalette)/midPalette);
+        let s = baseSaturation * (scontrast*(i+1)/midPalette);
+        let l = baseLuminosity * ((i)**(lcontrast)/midPalette);
         // //shade
         //     //luminosity drops A LOT, hue moves SLIGHTLY, saturation drops a MEDIUM amount
         //     //hue and saturation drop linearly, luminosity drops exponentially (rate increases in darker areas)
        
-        return `hsl(${cConvert.hueReset(h)},${s}%,${l}%)`;
+        return `hsl(${cConvert.hueReset(h).toFixed(2)},${s.toFixed(2)}%,${l.toFixed(2)}%)`;
     }
     updateSettings = (e) => {
         e.persist();
@@ -47,11 +48,18 @@ export default class Shading extends Component {
             <React.Fragment>
                 <h3>shading color palette</h3>
                 <div className="paletteSettings">
-                    <input type="range" min={this.state["relative hue of shadow"][0]} max={this.state["relative hue of shadow"][1]} value={this.state["relative hue of shadow"][2]} onChange={this.updateSettings} name="relative hue of shadow"></input>
+                    {Object.keys(this.state).map(e=>{
+                        return(
+                            <div className="paletteSetting" key={e}>
+                                <span className="paletteSettingLabel">{e}</span>
+                                <input type="range" min={this.state[e][0]} max={this.state[e][1]} value={this.state[e][2]} onChange={this.updateSettings} name={e}></input>
+                            </div>
+                        );
+                    })}
                 </div>
                 <div className="paletteContainer">
                     <div className="paletteBlock">
-                        <div className="paletteRow">
+                        <div className="paletteRow" style={{display:'flex',flexWrap:'wrap',width:'21em'}}>
                             {new Array(paletteSize).fill(0).map((e,i)=>{
                                 let color = this.calculateColor(i);
                                 return(

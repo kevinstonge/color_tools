@@ -59,7 +59,7 @@ export default class Harmonic extends Component {
                 <h3>harmonic color palettes</h3>
                 <div className="paletteSettings">
                     {Object.keys(this.state).map(e=>
-                        <div key={`set${e}`} className={`paletteSetting`}>
+                        <div key={`set${e}`} className="paletteSetting">
                         <span className="paletteSettingLabel">{e}</span>
                             {(this.settings[e].type === "list") ? 
                                 Object.keys(this.settings[e]).map((f,i)=>{

@@ -8,23 +8,26 @@ export default class ColorPalette extends Component {
         super(props)
     
         this.state = {
-            mode: 1
+            mode: "Harmonic"
         }
-        this.modes = [Harmonic, Shading]
+        this.modes = {
+            "Harmonic" : Harmonic,
+            "Shading" : Shading
+        }
     }
     changeMode = (e) => {
         e.persist();
-        let newState = {mode: Number(e.target.id.replace("paletteMode",""))};
+        let newState = {mode: e.target.id.replace("paletteMode","")};
         this.setState(newState);
     }
     render() {
         return (
             <React.Fragment>
             <div id="colorPaletteModeButtons">
-                {this.modes.map((e,i)=>{
-                    let mode = e.name;
-                    let checked = (i===this.state.mode) ? true : false;
-                    let id = `paletteMode${i}`;
+                {Object.keys(this.modes).map((e,i)=>{
+                    let mode = e;
+                    let checked = (e===this.state.mode) ? true : false;
+                    let id = `paletteMode${e}`;
                     return (
                         <span key={mode} className="colorPaletteModeButton">
                             <input type="radio" name="paletteMode" id={id} checked={checked} onChange={this.changeMode}></input>

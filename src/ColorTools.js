@@ -18,7 +18,7 @@ export default class ColorTools extends Component {
     if (color[0] >= 360) { color[0] = 0 }
     if (color[1] >= 100) { color[1] = 100 }
     if (color[2] >= 100) { color[2] = 100 }
-    color.forEach((e,i,a)=>color[i]=Number(e));
+    color = color.map(e=>Number(e));
     this.textColor = (color[2]>40) ? "black" : "white";
     this.setState({baseColor:color});
   }
