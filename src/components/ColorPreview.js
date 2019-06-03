@@ -31,9 +31,9 @@ export default class ColorPreview extends Component {
             }
         }
         this.colorHelp={
-            "hexInput":"enter six-digit hexidecimal values with no spaces, # prefix is optional",
-            "hslInput":"enter three values separated by spaces or commas, first value is hue and must be less than 360, second value is saturation and must be less than or equal to 100, third value is luminosity and must be less than or equal to 100. Decimals values can be used",
-            "rgbInput":"enter three values separated by spaces or commas, each value must be less than or equal to 255"
+            "hexInput":"enter six-digit hexidecimal values with no spaces,\n\"#\" prefix is optional",
+            "hslInput":"enter three values separated by spaces or commas,\nfirst value is hue and must be less than 360,\nsecond value is saturation and must be less than or equal to 100,\nthird value is luminosity and must be less than or equal to 100.\nDecimals values can be used",
+            "rgbInput":"enter three values separated by spaces or commas,\neach value must be less than or equal to 255"
         }
     } 
     iChange = (e) => {

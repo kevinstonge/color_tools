@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import * as cConvert from '../accessories/colorConversion';
-import copyToClipboard from '../accessories/copyToClipboard';
 
 export default class Harmonic extends Component {
     constructor(props) {
@@ -26,19 +25,12 @@ export default class Harmonic extends Component {
                 type: "range",
                 min: 1,
                 max: 7
-            },
-            "Copied format": {
-                type: "list",
-                "hex":(color)=>{return cConvert.hsl2hex(...color)},
-                "hsl":(color)=>{return `${color[0]},${color[1]}%,${color[2]}%`},
-                "rgb":(color)=>{return cConvert.hsl2rgb(...color)},
             }
         }
         this.state = {
             "Palette Mode": "Analogous",
             "Saturation Steps": 4,
             "Luminosity Steps": 4,
-            "Copied format": "hex"
         }
     }
     updateState = (e) => {
@@ -48,10 +40,11 @@ export default class Harmonic extends Component {
         if (value.match(/\d+/g)) { value = Number(value) }
         newState[e.target.name] = value;
         this.setState(newState);
+        this.props.updateCookie({"Harmonic":newState});
     }
-    paletteBoxClick = (e,copyString,hslArray) => {
-        e.persist();
-        (e.ctrlKey) ? this.props.updateBaseColor(hslArray) : copyToClipboard(copyString);
+    applyCookie = () => {
+        let cookieObject = JSON.parse(document.cookie);
+        if (cookieObject && cookieObject["Harmonic"]) { this.setState(cookieObject["Harmonic"]); }
     }
     render() {
         return (
@@ -110,13 +103,13 @@ export default class Harmonic extends Component {
                                 
                                 {Array(this.state["Luminosity Steps"]).fill("0").map((l,k)=> {
                                     let luminosity = Number(100*(k+1)/(1+this.state["Luminosity Steps"])).toFixed(2);
-                                    let clipBoardString = this.settings["Copied format"][this.state["Copied format"]]([hue,saturation,luminosity]);
+                                    let clipBoardString = this.props.copiedFormats[this.props.paletteState["Copied format"]]([hue,saturation,luminosity]);
                                     return(<div 
                                         key={`h${i}s${j}l${k}`}
                                         className="paletteBox"
                                         style={{backgroundColor:`hsl(${hue},${saturation}%,${luminosity}%)`}}
                                         title={`click to copy:\n${clipBoardString}`}
-                                        onClick={(e)=>{this.paletteBoxClick(e,clipBoardString,[hue,saturation,luminosity])}}
+                                        onClick={(e)=>{this.props.paletteBoxClick(e,clipBoardString,[hue,saturation,luminosity])}}
                                     >
                                     </div>);
                                 })}
@@ -131,5 +124,8 @@ export default class Harmonic extends Component {
                 </div>
             </div>
         )
+    }
+    componentDidMount () {
+        this.applyCookie();
     }
 }

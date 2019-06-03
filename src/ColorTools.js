@@ -13,6 +13,7 @@ export default class ColorTools extends Component {
       width:300,
     };
   }
+
   updateBaseColor = (color) => { 
     if (color === this.state.baseColor) { return; }
     if (color[0] >= 360) { color[0] = 0 }
@@ -21,7 +22,23 @@ export default class ColorTools extends Component {
     color = color.map(e=>Number(e));
     this.textColor = (color[2]>40) ? "black" : "white";
     this.setState({baseColor:color});
+    this.updateCookie();
   }
+
+  updateCookie = (data) => {
+    let cookieObject = (document.cookie.includes("baseColor")) ? JSON.parse(document.cookie) : this.state;
+    (data !== undefined) ? Object.assign(cookieObject,data) : Object.assign(cookieObject,this.state);
+    document.cookie = JSON.stringify(cookieObject);
+  }
+
+  applyCookie = () => {
+    if (document.cookie) {
+      let cookieObject = JSON.parse(document.cookie);
+      this.setState(cookieObject);
+    }
+    else { this.updateCookie() }
+  }
+
   render() {
   return (
     <div id="colorToolsFlexContainer">
@@ -32,9 +49,12 @@ export default class ColorTools extends Component {
         <RgbSliders updateBaseColor={this.updateBaseColor} state={this.state} />
       </div>
       <div id="colorPalette">
-        <ColorPalette updateBaseColor={this.updateBaseColor} state={this.state}/>
+        <ColorPalette updateBaseColor={this.updateBaseColor} updateCookie={this.updateCookie} state={this.state}/>
       </div>
     </div>
   );
   };
+  componentDidMount () {
+    this.applyCookie();
+  }
 }

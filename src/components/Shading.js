@@ -33,14 +33,18 @@ export default class Shading extends Component {
         //     //luminosity drops A LOT, hue moves SLIGHTLY, saturation drops a MEDIUM amount
         //     //hue and saturation drop linearly, luminosity drops exponentially (rate increases in darker areas)
        
-        return `hsl(${cConvert.hueReset(h).toFixed(2)},${s.toFixed(2)}%,${l.toFixed(2)}%)`;
+        return [cConvert.hueReset(h).toFixed(2),s.toFixed(2),l.toFixed(2)];
     }
     updateSettings = (e) => {
         e.persist();
         let newState = this.state;
         newState[e.target.name][2] = Number(e.target.value);
         this.setState(newState);
-        this.forceUpdate();
+        this.props.updateCookie({"Shading":newState});
+    }
+    applyCookie = () => {
+        let cookieObject = JSON.parse(document.cookie);
+        if (cookieObject && cookieObject["Shading"]) { this.setState(cookieObject["Shading"]); }
     }
     render() {
         let paletteSize = this.state["palette size"][2];
@@ -62,12 +66,15 @@ export default class Shading extends Component {
                         <div className="paletteRow" style={{display:'flex',flexWrap:'wrap',width:'21em'}}>
                             {new Array(paletteSize).fill(0).map((e,i)=>{
                                 let color = this.calculateColor(i);
+                                let clipBoardString = this.props.copiedFormats[this.props.paletteState["Copied format"]]([color[0],color[1],color[2]]);
+                                let cssColor = `hsl(${color[0]},${color[1]}%,${color[2]}%)`;
                                 return(
                                     <div 
                                         className="paletteBox"
                                         key={i}
-                                        style={{backgroundColor:color}}
-                                        title={color}
+                                        style={{backgroundColor:cssColor}}
+                                        title={`click to copy:\n${clipBoardString}`}
+                                        onClick={(e)=>{this.props.paletteBoxClick(e,clipBoardString,[color[0],color[1],color[2]])}}
                                     >
                                     </div>
                                 );
@@ -77,5 +84,8 @@ export default class Shading extends Component {
                 </div>
             </React.Fragment>
         )
+    }
+    componentDidMount () {
+        this.applyCookie();
     }
 }

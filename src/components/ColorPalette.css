@@ -1,4 +1,4 @@
-#colorPaletteModeButtons {
+.colorPaletteModeButtons {
     border-bottom: 1px dashed #777;
     margin-bottom: 0.5em;
 }
@@ -19,6 +19,7 @@
 
 .paletteSetting {
     display: flex;
+    flex-direction: row;
     flex-wrap: wrap;
     justify-content: space-evenly;
     border: 1px solid #777;
