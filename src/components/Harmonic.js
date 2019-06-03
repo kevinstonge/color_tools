@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
-import * as cConvert from '../accessories/colorConversion';
+import {hueReset} from '../accessories/colorConversion';
+import * as cookies from '../accessories/cookies';
+
 
 export default class Harmonic extends Component {
     constructor(props) {
@@ -40,12 +42,18 @@ export default class Harmonic extends Component {
         if (value.match(/\d+/g)) { value = Number(value) }
         newState[e.target.name] = value;
         this.setState(newState);
-        //this.props.updateCookie({"Harmonic":newState});
+        this.updateCookie();
     }
+    updateCookie = () => {
+        cookies.setCookie("Harmonic",JSON.stringify(this.state),1);
+    }
+
     applyCookie = () => {
-        let cookieObject = JSON.parse(document.cookie);
-        if (cookieObject && cookieObject["Harmonic"]) { this.setState(cookieObject["Harmonic"]); }
+        let cookie = cookies.getCookie("Harmonic");
+        (cookie) ? this.setState(JSON.parse(cookie)) : this.updateCookie();
+        console.log(cookie);
     }
+
     render() {
         return (
             <div>
@@ -92,7 +100,7 @@ export default class Harmonic extends Component {
                 </div>
                 <div className="paletteContainer">
                     {Object.values(this.settings["Palette Mode"][this.state["Palette Mode"]]).map((h,i)=>{
-                        let hue = cConvert.hueReset(Number(this.props.globalState.baseColor[0])+h).toFixed(2);
+                        let hue = hueReset(Number(this.props.globalState.baseColor[0])+h).toFixed(2);
                         return (
                         <div key={`h${i}`} className="paletteBlock">
                         
@@ -126,6 +134,6 @@ export default class Harmonic extends Component {
         )
     }
     componentDidMount () {
-        //this.applyCookie();
+        this.applyCookie();
     }
 }

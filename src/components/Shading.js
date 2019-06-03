@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import * as cConvert from '../accessories/colorConversion';
-// import copyToClipboard from '../accessories/copyToClipboard';
+import {hueReset} from '../accessories/colorConversion';
+import * as cookies from '../accessories/cookies';
+
 
 export default class Shading extends Component {
     constructor(props) {
@@ -33,18 +34,23 @@ export default class Shading extends Component {
         //     //luminosity drops A LOT, hue moves SLIGHTLY, saturation drops a MEDIUM amount
         //     //hue and saturation drop linearly, luminosity drops exponentially (rate increases in darker areas)
        
-        return [cConvert.hueReset(h).toFixed(2),s.toFixed(2),l.toFixed(2)];
+        return [hueReset(h).toFixed(2),s.toFixed(2),l.toFixed(2)];
     }
     updateSettings = (e) => {
         e.persist();
         let newState = this.state;
         newState[e.target.name][2] = Number(e.target.value);
         this.setState(newState);
-        //this.props.updateCookie({"Shading":newState});
+        this.updateCookie();
     }
+    updateCookie = () => {
+        cookies.setCookie("Shading",JSON.stringify(this.state),1);
+    }
+
     applyCookie = () => {
-        let cookieObject = JSON.parse(document.cookie);
-        if (cookieObject && cookieObject["Shading"]) { this.setState(cookieObject["Shading"]); }
+        let cookie = cookies.getCookie("Shading");
+        (cookie) ? this.setState(JSON.parse(cookie)) : this.updateCookie();
+        console.log(cookie);
     }
     render() {
         let paletteSize = this.state["palette size"][2];
@@ -86,6 +92,6 @@ export default class Shading extends Component {
         )
     }
     componentDidMount () {
-        //this.applyCookie();
+        this.applyCookie();
     }
 }

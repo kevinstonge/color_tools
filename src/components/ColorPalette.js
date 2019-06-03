@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import Harmonic from './Harmonic';
 import Shading from './Shading';
 import copyToClipboard from '../accessories/copyToClipboard';
-import * as cConvert from '../accessories/colorConversion';
+import {hsl2hex, hsl2rgb} from '../accessories/colorConversion';
+import * as cookies from '../accessories/cookies';
 import './ColorPalette.css';
 
 export default class ColorPalette extends Component {
@@ -18,26 +19,33 @@ export default class ColorPalette extends Component {
             "Shading" : Shading
         }
         this.copiedFormats = {
-            "hex":(color)=>{return cConvert.hsl2hex(...color)},
+            "hex":(color)=>{return hsl2hex(...color)},
             "hsl":(color)=>{return `${color[0]},${color[1]}%,${color[2]}%`},
-            "rgb":(color)=>{return cConvert.hsl2rgb(...color)},
+            "rgb":(color)=>{return hsl2rgb(...color)},
         }
     }
     changeMode = (e) => {
         let newState = this.state;
         newState.mode = e.target.id.replace("paletteMode","");
         this.setState(newState);
-        //this.props.updateCookie({"ColorPalette":newState});
+        this.updateCookie();
     }
+
+    updateCookie = () => {
+        cookies.setCookie("ColorPalette",JSON.stringify(this.state),1);
+    }
+
+    applyCookie = () => {
+    let cookie = cookies.getCookie("ColorPalette");
+    (cookie) ? this.setState(JSON.parse(cookie)) : this.updateCookie();
+    console.log(cookie);
+    }
+
     changeCopiedFormat = (e) => {
         let newState = this.state;
         newState["Copied format"] = e.target.id.replace("copiedFormat","");
         this.setState(newState);
-        //this.props.updateCookie({"ColorPalette":newState});
-    }
-    applyCookie = () => {
-        let cookieObject = JSON.parse(document.cookie);
-        if (cookieObject && cookieObject["ColorPalette"]) { this.setState(cookieObject["ColorPalette"]); }
+        this.updateCookie();
     }
 
     paletteBoxClick = (e,copyString,hslArray) => {
@@ -98,6 +106,6 @@ export default class ColorPalette extends Component {
         )
     }
     componentDidMount () {
-        //this.applyCookie();
+        this.applyCookie();
     }
 }

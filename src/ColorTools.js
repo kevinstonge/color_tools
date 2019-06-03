@@ -3,7 +3,7 @@ import ColorPreview from './components/ColorPreview';
 import ColorWheel from './components/ColorWheel';
 import HslSliders from './components/HslSliders';
 import ColorPalette from './components/ColorPalette';
-import Cookies from 'universal-cookie';
+import * as cookies from './accessories/cookies';
 import './ColorTools.css';
 import RgbSliders from './components/RgbSliders';
 export default class ColorTools extends Component {
@@ -13,7 +13,6 @@ export default class ColorTools extends Component {
       baseColor:[0,100,50],
       width:300,
     };
-    this.cookies = new Cookies();
   }
 
   updateBaseColor = (color) => { 
@@ -24,16 +23,17 @@ export default class ColorTools extends Component {
     color = color.map(e=>Number(e));
     this.textColor = (color[2]>40) ? "black" : "white";
     this.setState({baseColor:color});
-    //this.updateCookie();
+    this.updateCookie();
   }
 
   updateCookie = () => {
-    this.cookies.set("colorTools",JSON.stringify(this.state),{ path: '/', domain: 'localhost:3000'});
+    cookies.setCookie("colorTools",JSON.stringify(this.state),1);
   }
 
   applyCookie = () => {
-    let cookie = this.cookies.get("colorTools");
+    let cookie = cookies.getCookie("colorTools");
     (cookie) ? this.setState(JSON.parse(cookie)) : this.updateCookie();
+    console.log(cookie);
   }
 
   render() {
@@ -52,6 +52,6 @@ export default class ColorTools extends Component {
   );
   };
   componentDidMount () {
-    //this.applyCookie();
+    this.applyCookie();
   }
 }
