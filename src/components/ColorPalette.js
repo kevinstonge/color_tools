@@ -27,13 +27,13 @@ export default class ColorPalette extends Component {
         let newState = this.state;
         newState.mode = e.target.id.replace("paletteMode","");
         this.setState(newState);
-        this.props.updateCookie({"ColorPalette":newState});
+        //this.props.updateCookie({"ColorPalette":newState});
     }
     changeCopiedFormat = (e) => {
         let newState = this.state;
         newState["Copied format"] = e.target.id.replace("copiedFormat","");
         this.setState(newState);
-        this.props.updateCookie({"ColorPalette":newState});
+        //this.props.updateCookie({"ColorPalette":newState});
     }
     applyCookie = () => {
         let cookieObject = JSON.parse(document.cookie);
@@ -98,6 +98,6 @@ export default class ColorPalette extends Component {
         )
     }
     componentDidMount () {
-        this.applyCookie();
+        //this.applyCookie();
     }
 }

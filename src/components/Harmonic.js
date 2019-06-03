@@ -40,7 +40,7 @@ export default class Harmonic extends Component {
         if (value.match(/\d+/g)) { value = Number(value) }
         newState[e.target.name] = value;
         this.setState(newState);
-        this.props.updateCookie({"Harmonic":newState});
+        //this.props.updateCookie({"Harmonic":newState});
     }
     applyCookie = () => {
         let cookieObject = JSON.parse(document.cookie);
@@ -126,6 +126,6 @@ export default class Harmonic extends Component {
         )
     }
     componentDidMount () {
-        this.applyCookie();
+        //this.applyCookie();
     }
 }

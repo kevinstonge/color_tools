@@ -3,6 +3,7 @@ import ColorPreview from './components/ColorPreview';
 import ColorWheel from './components/ColorWheel';
 import HslSliders from './components/HslSliders';
 import ColorPalette from './components/ColorPalette';
+import Cookies from 'universal-cookie';
 import './ColorTools.css';
 import RgbSliders from './components/RgbSliders';
 export default class ColorTools extends Component {
@@ -12,6 +13,7 @@ export default class ColorTools extends Component {
       baseColor:[0,100,50],
       width:300,
     };
+    this.cookies = new Cookies();
   }
 
   updateBaseColor = (color) => { 
@@ -22,21 +24,16 @@ export default class ColorTools extends Component {
     color = color.map(e=>Number(e));
     this.textColor = (color[2]>40) ? "black" : "white";
     this.setState({baseColor:color});
-    this.updateCookie();
+    //this.updateCookie();
   }
 
-  updateCookie = (data) => {
-    let cookieObject = (document.cookie.includes("baseColor")) ? JSON.parse(document.cookie) : this.state;
-    (data !== undefined) ? Object.assign(cookieObject,data) : Object.assign(cookieObject,this.state);
-    document.cookie = JSON.stringify(cookieObject);
+  updateCookie = () => {
+    this.cookies.set("colorTools",JSON.stringify(this.state),{ path: '/', domain: 'localhost:3000'});
   }
 
   applyCookie = () => {
-    if (document.cookie) {
-      let cookieObject = JSON.parse(document.cookie);
-      this.setState(cookieObject);
-    }
-    else { this.updateCookie() }
+    let cookie = this.cookies.get("colorTools");
+    (cookie) ? this.setState(JSON.parse(cookie)) : this.updateCookie();
   }
 
   render() {
@@ -55,6 +52,6 @@ export default class ColorTools extends Component {
   );
   };
   componentDidMount () {
-    this.applyCookie();
+    //this.applyCookie();
   }
 }

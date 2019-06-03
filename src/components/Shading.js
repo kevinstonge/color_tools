@@ -40,7 +40,7 @@ export default class Shading extends Component {
         let newState = this.state;
         newState[e.target.name][2] = Number(e.target.value);
         this.setState(newState);
-        this.props.updateCookie({"Shading":newState});
+        //this.props.updateCookie({"Shading":newState});
     }
     applyCookie = () => {
         let cookieObject = JSON.parse(document.cookie);
@@ -86,6 +86,6 @@ export default class Shading extends Component {
         )
     }
     componentDidMount () {
-        this.applyCookie();
+        //this.applyCookie();
     }
 }
