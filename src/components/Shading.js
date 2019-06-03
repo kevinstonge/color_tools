@@ -22,14 +22,32 @@ export default class Shading extends Component {
         let baseLuminosity = Number(baseColor[2]);
         let highlight = this.state["highlight temp"][2] * ((baseHue >= 0 && baseHue < 180) ? -1 : 1);
         let shadow = this.state["shadow temp"][2] * ((baseHue >=0 && baseHue < 180) ? 1 : -1);
-        let lcontrast = 0.1*this.state["luminosity contrast"][2];
-        let scontrast = 0.1*this.state["saturation contrast"][2];
+        let lContrast = this.state["luminosity contrast"][2];
+        let sContrast = this.state["saturation contrast"][2];
         let paletteSize = this.state["palette size"][2];
         let midPalette = paletteSize/2;
         let hueShift = (i<midPalette) ? shadow : highlight;
         let h = baseHue + (hueShift*(i-midPalette)/midPalette);
-        let s = baseSaturation * (scontrast*(i+1)/midPalette);
-        let l = baseLuminosity * ((i)**(lcontrast)/midPalette);
+        let s = baseSaturation;
+        let l = baseLuminosity;
+        if (i<midPalette) {
+            //shading
+            let lShift = (baseLuminosity/midPalette)*(midPalette-i-1);
+            l = baseLuminosity - (lShift*(lContrast/this.state["luminosity contrast"][1])**.2);
+            let sShift = (baseSaturation/midPalette)*(midPalette-i-1);
+            s = baseSaturation - (sShift*(sContrast)/this.state["saturation contrast"][1]);
+        }
+        else {
+            //highlighting
+            let lShift = ((100-baseLuminosity)/midPalette)*(i-midPalette);
+            l = baseLuminosity + (lShift*(lContrast/this.state["luminosity contrast"][1]));
+            let sShift = ((100-baseSaturation)/midPalette)*(i-midPalette);
+            s = baseSaturation + (sShift*(sContrast/this.state["saturation contrast"][1]));
+        }
+        /*luminosity:
+            when i<midPalette divide baseLuminosity by lcontrast*i
+        */
+
         // //shade
         //     //luminosity drops A LOT, hue moves SLIGHTLY, saturation drops a MEDIUM amount
         //     //hue and saturation drop linearly, luminosity drops exponentially (rate increases in darker areas)
@@ -50,10 +68,15 @@ export default class Shading extends Component {
     applyCookie = () => {
         let cookie = cookies.getCookie("Shading");
         (cookie) ? this.setState(JSON.parse(cookie)) : this.updateCookie();
-        console.log(cookie);
     }
     render() {
         let paletteSize = this.state["palette size"][2];
+        let palette = new Array(paletteSize);
+        palette = palette.fill("0").map((e,i,a)=>this.calculateColor(i));
+        let shadingGradient = 
+            `linear-gradient(to right, 
+                ${palette.map(e=>`hsl(${e[0]},${e[1]}%,${e[2]}%)`)}
+        )`;
         return (
             <React.Fragment>
                 <h3>shading color palette</h3>
@@ -70,8 +93,8 @@ export default class Shading extends Component {
                 <div className="paletteContainer">
                     <div className="paletteBlock">
                         <div className="paletteRow" style={{display:'flex',flexWrap:'wrap',width:'21em'}}>
-                            {new Array(paletteSize).fill(0).map((e,i)=>{
-                                let color = this.calculateColor(i);
+                            {palette.map((e,i)=>{
+                                let color = e;
                                 let clipBoardString = this.props.copiedFormats[this.props.paletteState["Copied format"]]([color[0],color[1],color[2]]);
                                 let cssColor = `hsl(${color[0]},${color[1]}%,${color[2]}%)`;
                                 return(
@@ -85,6 +108,14 @@ export default class Shading extends Component {
                                     </div>
                                 );
                             }) }
+                        </div>
+                    </div>
+                    <div className="paletteBlock">
+                        <div style={{
+                            background:shadingGradient,
+                            width: "200px",
+                            height: "200px"
+                        }}>
                         </div>
                     </div>
                 </div>

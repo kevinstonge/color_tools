@@ -38,7 +38,6 @@ export default class ColorPalette extends Component {
     applyCookie = () => {
     let cookie = cookies.getCookie("ColorPalette");
     (cookie) ? this.setState(JSON.parse(cookie)) : this.updateCookie();
-    console.log(cookie);
     }
 
     changeCopiedFormat = (e) => {

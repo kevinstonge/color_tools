@@ -51,7 +51,6 @@ export default class Harmonic extends Component {
     applyCookie = () => {
         let cookie = cookies.getCookie("Harmonic");
         (cookie) ? this.setState(JSON.parse(cookie)) : this.updateCookie();
-        console.log(cookie);
     }
 
     render() {

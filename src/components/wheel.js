@@ -57,15 +57,15 @@ export default class cWheel {
         this.wheelSelector = [x,y];
     }
     drawInnerBox = (baseHue=this.baseColorHSL[0]) => {
-        for (let row = this.topY; row <= this.bottomY; row++) { 
+        for (let row = this.topY; row <= this.bottomY; row+=3) { 
             let rowPercent = 100*(row-this.topY)/(this.bottomY-this.topY);
             let boxGradient = this.ctx.createLinearGradient(this.leftX,row,this.rightX,row);
-            let steps = 3; //adding more steps may improve appearance at the cost of performance on slower devices
+            let steps = 2; 
             for (let i=0; i<=steps; i++) { 
                 boxGradient.addColorStop(i/steps,`hsla(${baseHue},${rowPercent}%,${100*i/steps}%,1)`);
             }
             this.ctx.strokeStyle = boxGradient;
-            this.ctx.lineWidth = 2;
+            this.ctx.lineWidth = 4; //using 4 for width and 3 for the increment helps performance without sacrificing appearance
             this.ctx.beginPath();
             this.ctx.moveTo(this.leftX,row);
             this.ctx.lineTo(this.rightX,row);
@@ -96,14 +96,6 @@ export default class cWheel {
     drawOutput = (output) => {
         output.forEach((e,i,a)=>a[i]=Number(a[i]).toFixed(2));
         this.updateSelectedColor(output);
-        this.baseColorHEX = cConvert.hsl2hex(...output);
-        this.ctxUI.textAlign = 'center';
-        this.ctxUI.font = `${this.outerWheelThickness}px monospace`;
-        this.ctxUI.fillStyle = 'white';
-        this.ctxUI.strokeStyle = 'black';
-        this.ctxUI.lineWidth = this.selectorLineWidth+1;
-        this.ctxUI.strokeText(this.baseColorHEX, this.textX, this.textY);
-        this.ctxUI.fillText(this.baseColorHEX, this.textX, this.textY);
     }
     drawSelectors = () => {
         let selectors = [[this.wheelSelector[0],this.wheelSelector[1]],[this.boxSelector[0],this.boxSelector[1]]];
