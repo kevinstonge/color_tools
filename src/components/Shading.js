@@ -23,36 +23,21 @@ export default class Shading extends Component {
         let lContrast = this.state["luminosity contrast"][2];
         let sContrast = this.state["saturation contrast"][2];
         let paletteSize = this.state["palette size"][2];
-        let midPalette = paletteSize/2;
-        let h;
-        let s;
-        let l;
-        if (i<midPalette) {
-            //shading
-            let hueShift = this.state["shadow temperature"][2] * ((baseHue >=0 && baseHue < 180) ? 1 : -1);
-            h = baseHue + (hueShift*(i-midPalette)/midPalette);
-            let sShift = (baseSaturation/midPalette)*(midPalette-i);
-            s = baseSaturation - (sShift*(sContrast)/this.state["saturation contrast"][1]);
-            let lShift = (baseLuminosity/midPalette)*(midPalette-i);
-            l = baseLuminosity - ((lShift**1.1)*(lContrast/this.state["luminosity contrast"][1]));
-        }
-        else {
-            //highlighting
-            let hueShift = this.state["highlight temperature"][2] * ((baseHue >=0 && baseHue < 180) ? -1 : 1);
-            h = baseHue + (hueShift*(i-midPalette)/midPalette);
-            let sShift = ((100-baseSaturation)/midPalette)*(i-midPalette);
-            s = baseSaturation + (sShift*(sContrast/this.state["saturation contrast"][1]));
-            let lShift = ((100-baseLuminosity)/midPalette)*(i-midPalette);
-            l = baseLuminosity + ((lShift**1.1)*(lContrast/this.state["luminosity contrast"][1]));
-        }
-        /*luminosity:
-            when i<midPalette divide baseLuminosity by lcontrast*i
-        */
+        let maxSaturation = this.state["saturation contrast"][1];
+        let maxLuminosity = this.state["luminosity contrast"][1]
 
-        // //shade
-        //     //luminosity drops A LOT, hue moves SLIGHTLY, saturation drops a MEDIUM amount
-        //     //hue and saturation drop linearly, luminosity drops exponentially (rate increases in darker areas)
-       
+        let h0 = baseHue + this.state["shadow temperature"][2] * ((baseHue >=0 && baseHue < 180) ? -1 : 1);
+        let h1  = baseHue + this.state["highlight temperature"][2] * ((baseHue >=0 && baseHue < 180) ? -1 : 1);
+        let h = h0 + ((h1-h0)*i/this.state["palette size"][2])
+
+        let s0 = baseSaturation - baseSaturation * (sContrast/maxSaturation);
+        let s1 = baseSaturation + (100-baseSaturation) * (sContrast/maxSaturation);
+        let s = s0 + ((s1-s0)*i/paletteSize);
+
+        let l0 = baseLuminosity - baseLuminosity * (lContrast/maxLuminosity);
+        let l1 = baseLuminosity + (100-baseLuminosity) * (lContrast/maxLuminosity);
+        let l = l0 + ((l1-l0)*i/paletteSize);
+
         return [hueReset(h).toFixed(2),s.toFixed(2),l.toFixed(2)];
     }
     updateSettings = (e) => {
@@ -78,6 +63,15 @@ export default class Shading extends Component {
             `linear-gradient(to right, 
                 ${palette.map(e=>`hsl(${e[0]},${e[1]}%,${e[2]}%)`)}
         )`;
+        let sphereCSS = {
+            width:"200px",
+            height:"200px",
+            clipPath:"circle()",
+            background:`radial-gradient(
+                60% 60% at 40% 40%,
+                ${palette.map(e=>`hsl(${e[0]},${e[1]}%,${e[2]}%)`).reverse()}
+            )`
+        }
         return (
             <React.Fragment>
                 <h3>shading color palette</h3>
@@ -132,11 +126,16 @@ export default class Shading extends Component {
                         }}>
                         </div>
                     </div>
+                    <div className="paletteBlock">
+                        <div style={sphereCSS}>
+
+                        </div>
+                    </div>
                 </div>
             </React.Fragment>
         )
     }
     componentDidMount () {
-        //this.applyCookie();
+        this.applyCookie();
     }
 }
