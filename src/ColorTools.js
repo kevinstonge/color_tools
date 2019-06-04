@@ -45,7 +45,7 @@ export default class ColorTools extends Component {
         <RgbSliders updateBaseColor={this.updateBaseColor} state={this.state} />
       </div>
       <div id="colorPalette">
-        <ColorPalette updateBaseColor={this.updateBaseColor} updateCookie={this.updateCookie} state={this.state}/>
+        <ColorPalette updateBaseColor={this.updateBaseColor} state={this.state}/>
       </div>
     </div>
   );

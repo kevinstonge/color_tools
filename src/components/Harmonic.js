@@ -60,7 +60,13 @@ export default class Harmonic extends Component {
                 <div className="paletteSettings">
                     {Object.keys(this.state).map(e=>
                         <div key={`set${e}`} className="paletteSetting">
-                        <span className="paletteSettingLabel">{e}</span>
+                        <span className="paletteSettingLabel">
+                            <span className="paletteSettingLabelName">{e}</span>
+                            <span className="paletteSettingLabelValue">
+                                {(Number(this.state[e])) ? `(${this.state[e]})` : "" }
+                            </span>
+                        </span>
+                        <span className="paletteSettingInputBlock">
                             {(this.settings[e].type === "list") ? 
                                 Object.keys(this.settings[e]).map((f,i)=>{
                                     if (i===0) { return null }
@@ -82,7 +88,8 @@ export default class Harmonic extends Component {
                                 })
                                 : 
                                 <React.Fragment>
-                                    <span className="paletteInputRangeBlock">({this.state[e]})
+                                    <span className="paletteInputRangeBlock">
+
                                     <input 
                                         type="range" 
                                         name={e} 
@@ -94,6 +101,7 @@ export default class Harmonic extends Component {
                                     </span>
                                 </React.Fragment>
                             }
+                        </span>
                         </div>
                     )}
                 </div>

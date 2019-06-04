@@ -19,26 +19,39 @@
 
 .paletteSetting {
     display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    justify-content: space-evenly;
+    flex-direction: column;
     border: 1px solid #777;
     border-radius: 0.25em;
     margin: 0.5em 0.5em 0.5em 0;
     padding: 0.25em;
+    min-width: 14em;
 }
 
 .paletteSettingLabel {
+    margin: 0 0.5em 0.2em 0.5em;
     font-weight: bold;
     width: 100%;
+}
+
+.paletteSettingLabelName {
     border-bottom: 1px dashed #777;
-    padding-bottom: 0.2em;
-    margin-bottom: 0.2em;
-    text-align: center;
+}
+
+.paletteSettingLabelValue {
+    float: right;
+    text-align: right;
+    margin-right: 0.5em;
+    width: 3em;
+}
+
+.paletteInputRangeBlock {
+    width: 12em;
+    display: flex;
+    justify-content: center;
 }
 
 .paletteSettings input[type=range] {
-    margin-left: 0.5em;
+    width: 100%;
     -webkit-appearance: none;
     appearance: none;
     background: #353535; 
@@ -59,6 +72,10 @@
     background: #454545;
  }
 
+ .paletteInputRadioBlock {
+     display: block;
+     white-space: nowrap;
+ }
 
 input[type=radio] + label {
     font-size: 0.9em;
@@ -84,14 +101,11 @@ input[type=radio] {
     display: none;
 }
 
-.paletteInputRadioBlock {
-    font-weight: normal;
-}
-
-.paletteInputRangeBlock {
+.paletteSettingInputBlock {
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
-    max-width: 4em;
+
 }
 
 .paletteContainer {

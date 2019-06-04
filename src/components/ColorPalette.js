@@ -98,7 +98,6 @@ export default class ColorPalette extends Component {
                     updateComponentState:this.updateComponentState,
                     copiedFormats:this.copiedFormats,
                     paletteBoxClick:this.paletteBoxClick,
-                    updateCookie:this.props.updateCookie
                 }
             )}
             </React.Fragment>

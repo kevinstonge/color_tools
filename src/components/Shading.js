@@ -8,11 +8,11 @@ export default class Shading extends Component {
         super(props)
         this.state = {
             // "setting":[min,max,current/default]
-            "highlight temp":[-50,50,20],
-            "shadow temp":[-50,50,-20],
-            "luminosity contrast": [1,10,9],
-            "saturation contrast": [1,10,5],
-            "palette size": [3,100,100],
+            "shadow temperature":[-50,50,-20],
+            "highlight temperature":[-50,50,20],
+            "luminosity contrast": [0,10,7],
+            "saturation contrast": [0,10,7],
+            "palette size": [4,100,100],
         }
     }
     calculateColor = (i) => {
@@ -20,29 +20,30 @@ export default class Shading extends Component {
         let baseHue = Number(baseColor[0]);
         let baseSaturation = Number(baseColor[1]);
         let baseLuminosity = Number(baseColor[2]);
-        let highlight = this.state["highlight temp"][2] * ((baseHue >= 0 && baseHue < 180) ? -1 : 1);
-        let shadow = this.state["shadow temp"][2] * ((baseHue >=0 && baseHue < 180) ? 1 : -1);
         let lContrast = this.state["luminosity contrast"][2];
         let sContrast = this.state["saturation contrast"][2];
         let paletteSize = this.state["palette size"][2];
         let midPalette = paletteSize/2;
-        let hueShift = (i<midPalette) ? shadow : highlight;
-        let h = baseHue + (hueShift*(i-midPalette)/midPalette);
-        let s = baseSaturation;
-        let l = baseLuminosity;
+        let h;
+        let s;
+        let l;
         if (i<midPalette) {
             //shading
-            let lShift = (baseLuminosity/midPalette)*(midPalette-i-1);
-            l = baseLuminosity - (lShift*(lContrast/this.state["luminosity contrast"][1])**.2);
-            let sShift = (baseSaturation/midPalette)*(midPalette-i-1);
+            let hueShift = this.state["shadow temperature"][2] * ((baseHue >=0 && baseHue < 180) ? 1 : -1);
+            h = baseHue + (hueShift*(i-midPalette)/midPalette);
+            let sShift = (baseSaturation/midPalette)*(midPalette-i);
             s = baseSaturation - (sShift*(sContrast)/this.state["saturation contrast"][1]);
+            let lShift = (baseLuminosity/midPalette)*(midPalette-i);
+            l = baseLuminosity - ((lShift**1.1)*(lContrast/this.state["luminosity contrast"][1]));
         }
         else {
             //highlighting
-            let lShift = ((100-baseLuminosity)/midPalette)*(i-midPalette);
-            l = baseLuminosity + (lShift*(lContrast/this.state["luminosity contrast"][1]));
+            let hueShift = this.state["highlight temperature"][2] * ((baseHue >=0 && baseHue < 180) ? -1 : 1);
+            h = baseHue + (hueShift*(i-midPalette)/midPalette);
             let sShift = ((100-baseSaturation)/midPalette)*(i-midPalette);
             s = baseSaturation + (sShift*(sContrast/this.state["saturation contrast"][1]));
+            let lShift = ((100-baseLuminosity)/midPalette)*(i-midPalette);
+            l = baseLuminosity + ((lShift**1.1)*(lContrast/this.state["luminosity contrast"][1]));
         }
         /*luminosity:
             when i<midPalette divide baseLuminosity by lcontrast*i
@@ -84,8 +85,21 @@ export default class Shading extends Component {
                     {Object.keys(this.state).map(e=>{
                         return(
                             <div className="paletteSetting" key={e}>
-                                <span className="paletteSettingLabel">{e}</span>
-                                <input type="range" min={this.state[e][0]} max={this.state[e][1]} value={this.state[e][2]} onChange={this.updateSettings} name={e}></input>
+                                <span className="paletteSettingLabel">
+                                    <span className="paletteSettingLabelName">{e}</span>
+                                    <span className="paletteSettingLabelValue">({this.state[e][2]})</span>
+                                </span>
+                                <span className="paletteInputRangeBlock">
+                                <input 
+                                    type="range" 
+                                    min={this.state[e][0]} 
+                                    max={this.state[e][1]} 
+                                    value={this.state[e][2]} 
+                                    title={this.state[e][2]}
+                                    onChange={this.updateSettings} 
+                                    name={e}>
+                                </input>
+                                </span>
                             </div>
                         );
                     })}
@@ -123,6 +137,6 @@ export default class Shading extends Component {
         )
     }
     componentDidMount () {
-        this.applyCookie();
+        //this.applyCookie();
     }
 }
