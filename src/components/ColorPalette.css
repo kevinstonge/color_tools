@@ -1,3 +1,7 @@
+
+tr:hover td span {  /* delete */
+    font-weight: bold;
+}
 .colorPaletteModeButtons {
     border-bottom: 1px dashed #777;
     margin-bottom: 0.5em;
@@ -125,6 +129,16 @@ input[type=radio] {
     border: 0.01em solid #777;
 }
 .paletteBox:hover {
+    border: 0.01em solid #fff;
+    cursor: pointer;
+}
+.contrastColorBox {
+    width: 2em;
+    height: 2em;
+    overflow: hidden;
+    border: 0.01em solid #777;
+}
+.contrastColorBox:hover {
     border: 0.01em solid #fff;
     cursor: pointer;
 }
