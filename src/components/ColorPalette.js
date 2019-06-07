@@ -65,7 +65,7 @@ export default class ColorPalette extends Component {
         return (
             <React.Fragment>
             <div className="colorPaletteModeButtons">
-                <span id="paletteToggle" >
+                <span id="paletteToggle" onClick={this.props.togglePicker}>
                 ☰
                 </span>
                 {Object.keys(this.modes).map((e,i)=>{

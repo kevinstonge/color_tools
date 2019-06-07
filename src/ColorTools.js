@@ -12,10 +12,8 @@ export default class ColorTools extends Component {
     this.state = { 
       baseColor:[0,100,50],
       width:300,
+      picker:true,
     };
-    this.paletteState = {
-      
-    }
   }
 
   updateBaseColor = (color) => { 
@@ -38,21 +36,26 @@ export default class ColorTools extends Component {
     (cookie) ? this.setState(JSON.parse(cookie)) : this.updateCookie();
   }
 
-  togglePalette = () => {
-
+  togglePicker = () => {
+    let newState = this.state;
+    newState.picker = (newState.picker) ? false : true;
+    this.setState(newState);
+  }
+  pickerCSS = () => {
+    return (this.state.picker) ? { display: "block" } : { display: "none" };
   }
 
   render() {
   return (
     <div id="colorToolsFlexContainer">
-      <div id="colorPickers" style={{width:this.state.width}}>
+      <div id="colorPickers" style={this.pickerCSS()}>
         <ColorPreview updateBaseColor={this.updateBaseColor} state={this.state} />
         <ColorWheel updateBaseColor={this.updateBaseColor} state={this.state} />
         <HslSliders updateBaseColor={this.updateBaseColor} state={this.state} />
         <RgbSliders updateBaseColor={this.updateBaseColor} state={this.state} />
       </div>
       <div id="colorPalette">
-        <ColorPalette updateBaseColor={this.updateBaseColor} state={this.state}/>
+        <ColorPalette updateBaseColor={this.updateBaseColor} togglePicker={this.togglePicker} state={this.state}/>
       </div>
     </div>
   );
