@@ -4,6 +4,5 @@
 #colorOutput input {
     font-weight:"bold";
     margin:0.1em 0.5em;
-    padding: 0.2em 0.2em 0.1em 0.2em;
-    border: 1px solid #555;
+    padding: 0.2em 0.2em 0.1em 0.2em;    
 }

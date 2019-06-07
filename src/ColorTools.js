@@ -13,6 +13,9 @@ export default class ColorTools extends Component {
       baseColor:[0,100,50],
       width:300,
     };
+    this.paletteState = {
+      
+    }
   }
 
   updateBaseColor = (color) => { 
@@ -33,6 +36,10 @@ export default class ColorTools extends Component {
   applyCookie = () => {
     let cookie = cookies.getCookie("colorTools");
     (cookie) ? this.setState(JSON.parse(cookie)) : this.updateCookie();
+  }
+
+  togglePalette = () => {
+
   }
 
   render() {

@@ -57,9 +57,11 @@ export default class ColorPreview extends Component {
     getData = (type) => { 
         if (typeof this.colorData[type] === "function") { return this.colorData[type]() }
         if (type === "style") {
+            let color = (this.props.state.baseColor[2]>45)?"black":"white"
             return ({
                 backgroundColor:cConvert.hsl2hex(...this.props.state.baseColor),
-                color:(this.props.state.baseColor[2]>45)?"black":"white",
+                color:color,
+                border:`1px solid ${color}`
             });
         }
     }

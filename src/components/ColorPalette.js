@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Harmonic from './Harmonic';
 import Shading from './Shading';
-import Contrast from './Contrast';
+// import Contrast from './Contrast';
 import copyToClipboard from '../accessories/copyToClipboard';
 import {hsl2hex, hsl2rgb} from '../accessories/colorConversion';
 import * as cookies from '../accessories/cookies';
@@ -18,7 +18,7 @@ export default class ColorPalette extends Component {
         this.modes = {
             "Harmonic" : Harmonic,
             "Shading" : Shading,
-            "Contrast" : Contrast
+            // "Contrast" : Contrast
         }
         this.copiedFormats = {
             "hex":(color)=>{return hsl2hex(...color)},
@@ -65,6 +65,9 @@ export default class ColorPalette extends Component {
         return (
             <React.Fragment>
             <div className="colorPaletteModeButtons">
+                <span id="paletteToggle" >
+                ☰
+                </span>
                 {Object.keys(this.modes).map((e,i)=>{
                     let mode = e;
                     let checked = (e===this.state.mode) ? true : false;

@@ -5,6 +5,8 @@
     display: flex;
     flex-direction: row;
     height: 100%;
+    width: 100%;
+    justify-content: center;
 }
 #colorPalette {
     overflow-y: auto;
@@ -12,4 +14,6 @@
 }
 #colorPickers {
     padding: 0.5em;
+    transform: scaleX(1);
+    transform-origin: 0%;
 }

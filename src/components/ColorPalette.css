@@ -1,7 +1,9 @@
 
-tr:hover td span {  /* delete */
-    font-weight: bold;
+#paletteToggle {
+    margin: 0em 0.5em 0em 0em;
+    cursor: pointer; 
 }
+
 .colorPaletteModeButtons {
     border-bottom: 1px dashed #777;
     margin-bottom: 0.5em;

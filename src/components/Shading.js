@@ -59,10 +59,10 @@ export default class Shading extends Component {
         let paletteSize = this.state["palette size"][2];
         let palette = new Array(paletteSize);
         palette = palette.fill("0").map((e,i,a)=>this.calculateColor(i));
-        let shadingGradient = 
-            `linear-gradient(to right, 
-                ${palette.map(e=>`hsl(${e[0]},${e[1]}%,${e[2]}%)`)}
-        )`;
+        // let shadingGradient = 
+        //     `linear-gradient(to right, 
+        //         ${palette.map(e=>`hsl(${e[0]},${e[1]}%,${e[2]}%)`)}
+        // )`;
         let sphereCSS = {
             width:"200px",
             height:"200px",
@@ -118,14 +118,19 @@ export default class Shading extends Component {
                             }) }
                         </div>
                     </div>
-                    <div className="paletteBlock">
+
+                    {/* previews below - suggestion: choose ONE to keep cpu usage lower */}
+                    {/* linear gradient preview using css */}
+                    {/* <div className="paletteBlock">
                         <div style={{
                             background:shadingGradient,
                             width: "200px",
                             height: "200px"
                         }}>
                         </div>
-                    </div>
+                    </div> */}
+
+                    {/* radial gradient preview using css */}
                     <div className="paletteBlock">
                         <div style={sphereCSS}>
 

@@ -29,16 +29,12 @@ export default class Contrast extends Component {
         */
         let rgbS = hsl2rgb(baseHue,baseSaturation,baseLuminosity);
         let l1;
-        let l2min;
-        let l2max;
         let l2;
         let lRatio;
         let coArray = [0.2126,0.7152,0.0722];
         let rgbSArray = [...rgbS];
         let rgbCArray;
-        let h;
-        let s;
-        let l;
+
         rgbSArray.forEach((e,i,a)=>{
             e = e/255;
             if (e <= 0.03928) {
@@ -54,18 +50,7 @@ export default class Contrast extends Component {
         })
         l1 = rgbSArray.reduce((a,b)=>a+b);
 
-        // this method attempts to work backwards through the luminance calculation
-        if ((l1+0.05) < 0.165) {  // one seventh max possible l1 value
-            l2min = (l1+0.05)*7 - 0.05;
-            l2max = 1.1021;
-        }
-        else {
-            l2min = 0;
-            l2max = (l1+0.05)/7 - 0.05;
-            if (l2max<0) { l2max = 0; }
-        }
-        l2 = (l2max-l2min)/2; //temporary - use slider later to set l2
-        l2 = l2max;
+        l2 = ((l1+0.05)<0.164) ? 1.1021 : (l1+0.05)/7 - 0.05;
         lRatio = (l1+.05)/(l2+.05);
         rgbCArray = [...rgbS];
         rgbCArray.forEach((e,i,a)=>{
@@ -75,14 +60,14 @@ export default class Contrast extends Component {
                 e = (e+.05)*12.92;
             }
             else { //light
-                //2.7 to 13+
-                e = (e)**(1/2.4);
+                e = (e+.05)**(1/2.4);
                 e = e*1.055;
                 e = e - 0.055;
             }
-            
             e = e*255;
             e = e*l2;
+            if (e > 255) { e = 255; }
+            if (e < 0) { e = 0; }
             a[i] = e.toFixed(0);
         });
 
