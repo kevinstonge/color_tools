@@ -24,6 +24,8 @@ export default class ColorTools extends Component {
     color = color.map(e=>Number(e));
     this.textColor = (color[2]>40) ? "black" : "white";
     this.setState({baseColor:color});
+    //improve performance by only updating cookie if the mouse isn't down (specifically when picking a color in ColorWheel)
+    //explore using localdata instaed of cookies
     this.updateCookie();
   }
 
