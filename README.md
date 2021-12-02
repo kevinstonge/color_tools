@@ -1,3 +1,3 @@
 ## Color Tools
 
-[Preview Build](https://kevinstonge.github.io/color_tools/build/).
+[Preview Build](https://colors.kevinstonge.com).
